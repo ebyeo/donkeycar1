@@ -116,7 +116,7 @@ class Vehicle():
             if entry.get('run_condition'):
                 run_condition = entry.get('run_condition')
                 run = self.mem.get([run_condition])[0]
-                #print('run_condition', entry['part'], entry.get('run_condition'), run)
+                print('run_condition', entry['part'], entry.get('run_condition'), run)
             
             if run:
                 p = entry['part']
