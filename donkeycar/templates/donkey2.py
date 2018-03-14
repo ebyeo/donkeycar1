@@ -17,7 +17,7 @@ from docopt import docopt
 import donkeycar as dk
 
 #import parts
-from donkeycar.parts.camera import PiCamera
+from donkeycar.parts.camera import Webcam
 from donkeycar.parts.transform import Lambda
 from donkeycar.parts.keras import KerasCategorical
 from donkeycar.parts.actuator import PCA9685, PWMSteering, PWMThrottle
@@ -39,8 +39,11 @@ def drive(cfg, model_path=None, use_joystick=False):
 
     #Initialize car
     V = dk.vehicle.Vehicle()
-    cam = PiCamera(resolution=cfg.CAMERA_RESOLUTION)
-    V.add(cam, outputs=['cam/image_array'], threaded=True)
+    cam_front = Webcam(resolution=cfg.CAMERA_RESOLUTION, src = 0)
+    V.add(cam_front, outputs=['cam/image_array'], threaded=True)
+
+    cam_rear = Webcam(resolution=cfg.CAMERA_RESOLUTION, src = 1)
+    V.add(cam_rear, outputs=['cam_rear/image_array'], threaded=True)
     
     if use_joystick or cfg.USE_JOYSTICK_AS_DEFAULT:
         #modify max_throttle closer to 1.0 to have more power
@@ -55,7 +58,7 @@ def drive(cfg, model_path=None, use_joystick=False):
 
     
     V.add(ctr, 
-          inputs=['cam/image_array'],
+          inputs=['cam/image_array', 'cam_rear/image_array'],
           outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],
           threaded=True)
     
@@ -115,8 +118,8 @@ def drive(cfg, model_path=None, use_joystick=False):
     V.add(throttle, inputs=['throttle'])
     
     #add tub to save data
-    inputs=['cam/image_array', 'user/angle', 'user/throttle', 'user/mode']
-    types=['image_array', 'float', 'float',  'str']
+    inputs=['cam/image_array', 'cam_rear/image_array', 'user/angle', 'user/throttle', 'user/mode']
+    types=['image_array', 'image_array', 'float', 'float',  'str']
     
     th = TubHandler(path=cfg.DATA_PATH)
     tub = th.new_tub_writer(inputs=inputs, types=types)
@@ -181,8 +184,3 @@ if __name__ == '__main__':
         model = args['--model']
         cache = not args['--no_cache']
         train(cfg, tub, model)
-
-
-
-
-

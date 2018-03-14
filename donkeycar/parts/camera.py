@@ -59,7 +59,7 @@ class PiCamera(BaseCamera):
         self.camera.close()
 
 class Webcam(BaseCamera):
-    def __init__(self, resolution = (160, 120), framerate = 20):
+    def __init__(self, resolution = (160, 120), framerate = 20, src = 0):
         import pygame
         import pygame.camera
 
@@ -68,7 +68,8 @@ class Webcam(BaseCamera):
         pygame.init()
         pygame.camera.init()
         l = pygame.camera.list_cameras()
-        self.cam = pygame.camera.Camera(l[0], resolution, "RGB")
+        self.cam = pygame.camera.Camera(l[src], resolution, "RGB")
+		self.src = src
         self.resolution = resolution
         self.cam.start()
         self.framerate = framerate
