@@ -18,6 +18,7 @@ import donkeycar as dk
 
 #import parts
 from donkeycar.parts.camera import Webcam
+from donkeycar.parts.ultrasonic import Ultrasonic
 from donkeycar.parts.transform import Lambda
 from donkeycar.parts.keras import KerasCategorical
 from donkeycar.parts.actuator import PCA9685, PWMSteering, PWMThrottle
@@ -61,8 +62,8 @@ def drive(cfg, model_path=None, use_joystick=False):
           outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],
           threaded=True)
 
-	us_front = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_ECHO)
-	V.add(us_front, outputs=['ultrasonic_front/distance']
+    us_front = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_ECHO)
+    V.add(us_front, outputs=['ultrasonic_front/distance'], threaded=True)
 	
     #See if we should even run the pilot module. 
     #This is only needed because the part run_condition only accepts boolean
@@ -121,7 +122,7 @@ def drive(cfg, model_path=None, use_joystick=False):
     
     #add tub to save data
     inputs=['cam/image_array', 'cam_back/image_array', 'ultrasonic_front/distance', 'user/angle', 'user/throttle', 'user/mode']
-    types=['image_array', 'image_array', 'froat', 'float', 'float',  'str']
+    types=['image_array', 'image_array', 'float', 'float', 'float',  'str']
     
     th = TubHandler(path=cfg.DATA_PATH)
     tub = th.new_tub_writer(inputs=inputs, types=types)

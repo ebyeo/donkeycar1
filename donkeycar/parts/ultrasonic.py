@@ -4,15 +4,15 @@ Ultrasonic
 
 import time
 import numpy as np
+import RPi.GPIO as GPIO
 
 
 class Ultrasonic():
-    def __init__(self, gpio_trigger = 18, gpio_echo = 24, poll_delay=1):
-        import RPi.GPIO as GPIO
+    def __init__(self, gpio_trigger = 12, gpio_echo = 16, poll_delay=1):
         self.gpio_trigger = gpio_trigger
         self.gpio_echo = gpio_echo
 		
-		self.poll_delay = poll_delay
+        self.poll_delay = poll_delay
 		
         #GPIO Mode (BOARD / BCM)
         GPIO.setmode(GPIO.BCM)
@@ -25,21 +25,21 @@ class Ultrasonic():
 
     def update(self):
         while self.on:
-            self.distance = distance()
+            self.distance = self.poll_distance()
             time.sleep(self.poll_delay)
             
     def run_threaded(self):
         return self.distance
 		
     def run(self):
-        self.distance = distance()
+        self.distance = self.poll_distance()
         return self.distance
 
     def shutdown(self):
         self.on = False
-		GPIO.cleanup()
+        GPIO.cleanup()
 
-    def distance():
+    def poll_distance(self):
         # set Trigger to HIGH
         GPIO.output(self.gpio_trigger, True)
 		
@@ -60,17 +60,17 @@ class Ultrasonic():
 			
         # time difference between start and arrival
         TimeElapsed = StopTime - StartTime
-		# multiply with the sonic speed (34300 cm/s)
-		# and divide by 2, because there and back
-		distance = (TimeElapsed * 34300) / 2
-		
-		return distance
+        # multiply with the sonic speed (34300 cm/s)
+        # and divide by 2, because there and back
+        distance = (TimeElapsed * 34300) / 2
+
+        return distance
 		
 if __name__ == "__main__":
     iter = 0
     u = Ultrasonic()
-    while iter < 100:
-        data = p.run()
+    while iter < 10:
+        data = u.run()
         print(data)
         time.sleep(1.0)
         iter += 1
