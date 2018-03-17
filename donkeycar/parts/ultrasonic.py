@@ -6,7 +6,6 @@ import time
 import numpy as np
 import RPi.GPIO as GPIO
 
-
 class Ultrasonic():
     def __init__(self, gpio_trigger = 12, gpio_echo = 16, poll_delay=1, name=''):
         self.gpio_trigger = gpio_trigger
@@ -69,6 +68,35 @@ class Ultrasonic():
         distance = (TimeElapsed * 34300) / 2
 
         return distance
+
+class MockUltrasonic():
+    def __init__(self, gpio_trigger = 12, gpio_echo = 16, poll_delay=1, name=''):
+        self.gpio_trigger = gpio_trigger
+        self.gpio_echo = gpio_echo
+        self.poll_delay = poll_delay
+        self.name = name
+        self.distance = 0.0
+        self.on = True
+
+    def update(self):
+        while self.on:
+            self.distance = self.poll_distance()
+            time.sleep(self.poll_delay)
+            
+    def run_threaded(self):
+        return self.distance
+		
+    def run(self):
+        self.distance = self.poll_distance()
+        return self.distance
+
+    def shutdown(self):
+        print('Shutdown ultrasonic', self.name)
+        self.on = False
+        time.sleep(1)
+		
+    def poll_distance(self):
+        return 0.5
 		
 if __name__ == "__main__":
     iter = 0
