@@ -43,6 +43,7 @@ class Ultrasonic():
         time.sleep(1)
 
     def poll_distance(self):
+
         # set Trigger to HIGH
         GPIO.output(self.gpio_trigger, True)
 		
@@ -54,11 +55,13 @@ class Ultrasonic():
         StopTime = time.time()
 		
         # save StartTime
-        while GPIO.input(self.gpio_echo) == 0:
+        timeout = time.time() + 0.5
+        while GPIO.input(self.gpio_echo) == 0 and time.time() < timeout:
             StartTime = time.time()
 
         # save time of arrival
-        while GPIO.input(self.gpio_echo) == 1:
+        timeout = time.time() + 0.5
+        while GPIO.input(self.gpio_echo) == 1 and time.time() < timeout:
             StopTime = time.time()
 			
         # time difference between start and arrival

@@ -46,6 +46,9 @@ def drive(cfg, model_path=None, use_joystick=False):
     cam_back = Webcam(resolution=cfg.CAMERA_RESOLUTION, src = 1, name = 'back')
     V.add(cam_back, outputs=['cam_back/image_array'], threaded=True)
     
+    us_front = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_ECHO, name='front')
+    V.add(us_front, outputs=['ultrasonic_front/distance'], threaded=True)
+	
     if use_joystick or cfg.USE_JOYSTICK_AS_DEFAULT:
         #modify max_throttle closer to 1.0 to have more power
         #modify steering_scale lower than 1.0 to have less responsive steering
@@ -58,13 +61,10 @@ def drive(cfg, model_path=None, use_joystick=False):
         ctr = LocalWebController()
     
     V.add(ctr, 
-          inputs=['cam/image_array', 'cam_back/image_array'],
+          inputs=['cam/image_array', 'cam_back/image_array', 'ultrasonic_front/distance'],
           outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],
           threaded=True)
 
-    us_front = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_ECHO, name='front')
-    V.add(us_front, outputs=['ultrasonic_front/distance'], threaded=True)
-	
     #See if we should even run the pilot module. 
     #This is only needed because the part run_condition only accepts boolean
     def pilot_condition(mode):
