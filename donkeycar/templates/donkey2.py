@@ -49,6 +49,27 @@ def drive(cfg, model_path=None, use_joystick=False):
     us_front = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_ECHO, name='front')
     V.add(us_front, outputs=['ultrasonic_front/distance'], threaded=True)
 	
+    us_front_left = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_LEFT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_LEFT_ECHO, name='front left')
+    V.add(us_front_left, outputs=['ultrasonic_front_left/distance'], threaded=True)
+	
+    us_front_right = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_RIGHT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_RIGHT_ECHO, name='front right')
+    V.add(us_front_right, outputs=['ultrasonic_front_right/distance'], threaded=True)
+	
+    us_back = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_BACK_TRIGGER, gpio_echo=cfg.ULTRASONIC_BACK_ECHO, name='back')
+    V.add(us_back, outputs=['ultrasonic_back/distance'], threaded=True)
+	
+    us_back_left = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_BACK_LEFT_TRIGGER, gpio_echo=cfg.ULTRASONIC_BACK_LEFT_ECHO, name='back left')
+    V.add(us_back_left, outputs=['ultrasonic_back_left/distance'], threaded=True)
+	
+    us_back_right = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_BACK_RIGHT_TRIGGER, gpio_echo=cfg.ULTRASONIC_BACK_RIGHT_ECHO, name='back right')
+    V.add(us_back_right, outputs=['ultrasonic_back_right/distance'], threaded=True)
+	
+    us_left = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_LEFT_TRIGGER, gpio_echo=cfg.ULTRASONIC_LEFT_ECHO, name='left')
+    V.add(us_left, outputs=['ultrasonic_left/distance'], threaded=True)
+	
+    us_right = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_RIGHT_TRIGGER, gpio_echo=cfg.ULTRASONIC_RIGHT_ECHO, name='right')
+    V.add(us_right, outputs=['ultrasonic_right/distance'], threaded=True)
+	
     if use_joystick or cfg.USE_JOYSTICK_AS_DEFAULT:
         #modify max_throttle closer to 1.0 to have more power
         #modify steering_scale lower than 1.0 to have less responsive steering
@@ -61,7 +82,7 @@ def drive(cfg, model_path=None, use_joystick=False):
         ctr = LocalWebController()
     
     V.add(ctr, 
-          inputs=['cam/image_array', 'cam_back/image_array', 'ultrasonic_front/distance'],
+          inputs=['cam/image_array', 'cam_back/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance', 'ultrasonic_back/distance', 'ultrasonic_back_left/distance', 'ultrasonic_back_right/distance', 'ultrasonic_left/distance', 'ultrasonic_right/distance'],
           outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],
           threaded=True)
 
@@ -121,7 +142,7 @@ def drive(cfg, model_path=None, use_joystick=False):
     V.add(throttle, inputs=['throttle'])
     
     #add tub to save data
-    inputs=['cam/image_array', 'cam_back/image_array', 'ultrasonic_front/distance', 'user/angle', 'user/throttle', 'user/mode']
+    inputs=['cam/image_array', 'cam_back/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance', 'ultrasonic_back/distance', 'ultrasonic_back_left/distance', 'ultrasonic_back_right/distance', 'ultrasonic_left/distance', 'ultrasonic_right/distance', 'user/angle', 'user/throttle', 'user/mode']
     types=['image_array', 'image_array', 'float', 'float', 'float',  'str']
     
     th = TubHandler(path=cfg.DATA_PATH)
