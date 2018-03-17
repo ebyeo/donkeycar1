@@ -121,6 +121,7 @@ class LocalWebController(tornado.web.Application):
             (r"/", tornado.web.RedirectHandler, dict(url="/drive")),
             (r"/drive", DriveAPI),
             (r"/video_front",VideoAPI),
+            (r"/video_back",VideoAPI),
             (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": self.static_file_path}),
             ]
 
@@ -185,7 +186,6 @@ class VideoAPI(tornado.web.RequestHandler):
             
             interval = .1
             if self.served_image_timestamp + interval < time.time():
-
 
                 if dir == '/video_front':
                     img = utils.arr_to_binary(self.application.img_arr)
