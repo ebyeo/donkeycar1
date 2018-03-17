@@ -136,13 +136,16 @@ class LocalWebController(tornado.web.Application):
         tornado.ioloop.IOLoop.instance().start()
 
 
-    def run_threaded(self, img_arr=None, img_arr_back=None):
+    def run_threaded(self, img_arr=None, img_arr_back=None, ultrasonic_front_distance=None):
         self.img_arr = img_arr
         self.img_arr_back = img_arr_back
+		self.ultrasonic_front_distance = ultrasonic_front_distance
         return self.angle, self.throttle, self.mode, self.recording
         
-    def run(self, img_arr=None):
+    def run(self, img_arr=None, img_arr_back=None, ultrasonic_front_distance=None):
         self.img_arr = img_arr
+        self.img_arr_back = img_arr_back
+		self.ultrasonic_front_distance = ultrasonic_front_distance
         return self.angle, self.throttle, self.mode, self.recording
 
 

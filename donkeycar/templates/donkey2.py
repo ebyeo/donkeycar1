@@ -42,8 +42,8 @@ def drive(cfg, model_path=None, use_joystick=False):
     cam_front = Webcam(resolution=cfg.CAMERA_RESOLUTION, src = 0)
     V.add(cam_front, outputs=['cam/image_array'], threaded=True)
 
-    cam_rear = Webcam(resolution=cfg.CAMERA_RESOLUTION, src = 1)
-    V.add(cam_rear, outputs=['cam_rear/image_array'], threaded=True)
+    cam_back = Webcam(resolution=cfg.CAMERA_RESOLUTION, src = 1)
+    V.add(cam_back, outputs=['cam_back/image_array'], threaded=True)
     
     if use_joystick or cfg.USE_JOYSTICK_AS_DEFAULT:
         #modify max_throttle closer to 1.0 to have more power
@@ -55,13 +55,15 @@ def drive(cfg, model_path=None, use_joystick=False):
         #This web controller will create a web server that is capable
         #of managing steering, throttle, and modes, and more.
         ctr = LocalWebController()
-
     
     V.add(ctr, 
-          inputs=['cam/image_array', 'cam_rear/image_array'],
+          inputs=['cam/image_array', 'cam_back/image_array'],
           outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],
           threaded=True)
-    
+
+	us_front = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_ECHO)
+	V.add(us_front, outputs=['ultrasonic_front/distance']
+	
     #See if we should even run the pilot module. 
     #This is only needed because the part run_condition only accepts boolean
     def pilot_condition(mode):
@@ -118,8 +120,8 @@ def drive(cfg, model_path=None, use_joystick=False):
     V.add(throttle, inputs=['throttle'])
     
     #add tub to save data
-    inputs=['cam/image_array', 'cam_rear/image_array', 'user/angle', 'user/throttle', 'user/mode']
-    types=['image_array', 'image_array', 'float', 'float',  'str']
+    inputs=['cam/image_array', 'cam_back/image_array', 'ultrasonic_front/distance', 'user/angle', 'user/throttle', 'user/mode']
+    types=['image_array', 'image_array', 'froat', 'float', 'float',  'str']
     
     th = TubHandler(path=cfg.DATA_PATH)
     tub = th.new_tub_writer(inputs=inputs, types=types)
