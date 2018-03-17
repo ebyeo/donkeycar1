@@ -40,10 +40,10 @@ def drive(cfg, model_path=None, use_joystick=False):
 
     #Initialize car
     V = dk.vehicle.Vehicle()
-    cam_front = Webcam(resolution=cfg.CAMERA_RESOLUTION, src = 0)
+    cam_front = Webcam(resolution=cfg.CAMERA_RESOLUTION, src = 0, name = 'front')
     V.add(cam_front, outputs=['cam/image_array'], threaded=True)
 
-    cam_back = Webcam(resolution=cfg.CAMERA_RESOLUTION, src = 1)
+    cam_back = Webcam(resolution=cfg.CAMERA_RESOLUTION, src = 1, name = 'back')
     V.add(cam_back, outputs=['cam_back/image_array'], threaded=True)
     
     if use_joystick or cfg.USE_JOYSTICK_AS_DEFAULT:
@@ -62,7 +62,7 @@ def drive(cfg, model_path=None, use_joystick=False):
           outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],
           threaded=True)
 
-    us_front = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_ECHO)
+    us_front = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_ECHO, name='front')
     V.add(us_front, outputs=['ultrasonic_front/distance'], threaded=True)
 	
     #See if we should even run the pilot module. 

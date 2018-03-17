@@ -1,0 +1,16 @@
+numpy
+pillow
+docopt
+tornado
+requests
+keras
+h5py
+python-socketio
+flask
+eventlet
+moviepy
+pandas
+
+[pi]
+picamera
+Adafruit_PCA9685

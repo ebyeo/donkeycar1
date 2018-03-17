@@ -8,11 +8,11 @@ import RPi.GPIO as GPIO
 
 
 class Ultrasonic():
-    def __init__(self, gpio_trigger = 12, gpio_echo = 16, poll_delay=1):
+    def __init__(self, gpio_trigger = 12, gpio_echo = 16, poll_delay=1, name=''):
         self.gpio_trigger = gpio_trigger
         self.gpio_echo = gpio_echo
-		
         self.poll_delay = poll_delay
+        self.name = name
 		
         #GPIO Mode (BOARD / BCM)
         GPIO.setmode(GPIO.BCM)
@@ -20,7 +20,9 @@ class Ultrasonic():
         #set GPIO direction (IN / OUT)
         GPIO.setup(self.gpio_trigger, GPIO.OUT)
         GPIO.setup(self.gpio_echo, GPIO.IN)
-		
+
+        self.distance = 0.0
+
         self.on = True
 
     def update(self):
@@ -36,8 +38,10 @@ class Ultrasonic():
         return self.distance
 
     def shutdown(self):
+        print('Shutdown ultrasonic', self.name)
         self.on = False
         GPIO.cleanup()
+        time.sleep(1)
 
     def poll_distance(self):
         # set Trigger to HIGH

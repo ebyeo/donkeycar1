@@ -59,7 +59,7 @@ class PiCamera(BaseCamera):
         self.camera.close()
 
 class Webcam(BaseCamera):
-    def __init__(self, resolution = (160, 120), framerate = 20, src = 0):
+    def __init__(self, resolution = (160, 120), framerate = 20, src = 0, name = ''):
         import pygame
         import pygame.camera
 
@@ -73,6 +73,7 @@ class Webcam(BaseCamera):
         self.resolution = resolution
         self.cam.start()
         self.framerate = framerate
+        self.name = name
 
         # initialize variable used to indicate
         # if the thread should be stopped
@@ -109,7 +110,7 @@ class Webcam(BaseCamera):
     def shutdown(self):
         # indicate that the thread should be stopped
         self.on = False
-        print('stoping Webcam')
+        print('stoping Webcam', self.name)
         time.sleep(.5)
 
 class MockCamera(BaseCamera):

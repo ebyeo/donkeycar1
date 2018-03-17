@@ -3,7 +3,6 @@ data/*
 dist/*
 *.pyc
 .ipynb_checkpoints
-*.egg-info/
 .git.bfg-report
 .DS_Store
 lag_log.csv
@@ -12,3 +11,4 @@ lag_log.csv
 site/*
 build
 .idea
+*swp

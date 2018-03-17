@@ -120,7 +120,7 @@ class LocalWebController(tornado.web.Application):
         handlers = [
             (r"/", tornado.web.RedirectHandler, dict(url="/drive")),
             (r"/drive", DriveAPI),
-            (r"/video",VideoAPI),
+            (r"/video_front",VideoAPI),
             (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": self.static_file_path}),
             ]
 
@@ -175,7 +175,7 @@ class VideoAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.coroutine
     def get(self):
-
+        dir = self.request.path
         ioloop = tornado.ioloop.IOLoop.current()
         self.set_header("Content-type", "multipart/x-mixed-replace;boundary=--boundarydonotcross")
 
@@ -187,7 +187,10 @@ class VideoAPI(tornado.web.RequestHandler):
             if self.served_image_timestamp + interval < time.time():
 
 
-                img = utils.arr_to_binary(self.application.img_arr)
+                if dir == '/video_front':
+                    img = utils.arr_to_binary(self.application.img_arr)
+                else:
+                    img = utils.arr_to_binary(self.application.img_arr_back)
 
                 self.write(my_boundary)
                 self.write("Content-type: image/jpeg\r\n")
