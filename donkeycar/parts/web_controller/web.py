@@ -136,9 +136,9 @@ class LocalWebController(tornado.web.Application):
         tornado.ioloop.IOLoop.instance().start()
 
 
-    def run_threaded(self, img_arr=None, img_arr_rear=None):
+    def run_threaded(self, img_arr=None, img_arr_back=None):
         self.img_arr = img_arr
-        self.img_arr_rear = img_arr_rear
+        self.img_arr_back = img_arr_back
         return self.angle, self.throttle, self.mode, self.recording
         
     def run(self, img_arr=None):
