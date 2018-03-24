@@ -13,6 +13,7 @@ The client and web server needed to control a car remotely.
 
 import os
 import json
+from bson import json_util
 import time
 
 import requests
@@ -120,7 +121,7 @@ class LocalWebController(tornado.web.Application):
         handlers = [
             (r"/", tornado.web.RedirectHandler, dict(url="/drive")),
             (r"/drive", DriveAPI),
-            (r"/drive", UltrasonicSensorAPI),
+            (r"/ultrasonic", UltrasonicSensorAPI),
             (r"/video_front",VideoAPI),
             (r"/video_back",VideoAPI),
             (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": self.static_file_path}),
@@ -168,21 +169,29 @@ class LocalWebController(tornado.web.Application):
 class UltrasonicSensorAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.coroutine
-    def get(self):
+    def post(self):
         print("inside ultrasonic loop")
-        ioloop = tornado.ioloop.IOLoop.current()
         interval = .1
-        while True:
-            distances = [self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance, self.application.ultrasonic_back_distance, self.application.ultrasonic_back_left_distance, self.application.ultrasonic_back_right_distance, self.application.ultrasonic_left_distance, self.application.ultrasonic_right_distance]
-            print(distances)
-            self.set_header("Content-Type", "application/json")
-            self.write(json.dumps(list(distances),default=json_util.default))
-            print(json.dumps(list(distances)))
+        distances = [self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance, self.application.ultrasonic_back_distance, self.application.ultrasonic_back_left_distance, self.application.ultrasonic_back_right_distance, self.application.ultrasonic_left_distance, self.application.ultrasonic_right_distance]
+        print(distances)
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps(list(distances),default=json_util.default))
+        print(json.dumps(list(distances)))
 
-            yield tornado.gen.Task(ioloop.add_timeout, ioloop.time() + interval)
+    @tornado.web.asynchronous
+    @tornado.gen.coroutine
+    def get(self):
+        print("inside get ultrasonic loop")
+        interval = .1
+        distances = [self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance, self.application.ultrasonic_back_distance, self.application.ultrasonic_back_left_distance, self.application.ultrasonic_back_right_distance, self.application.ultrasonic_left_distance, self.application.ultrasonic_right_distance]
+        print(distances)
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps(list(distances),default=json_util.default))
+        print(json.dumps(list(distances)))
 			
 class DriveAPI(tornado.web.RequestHandler):
-
+    @tornado.web.asynchronous
+    @tornado.gen.coroutine
     def get(self):
         data = {}
         self.render("templates/vehicle.html", **data)

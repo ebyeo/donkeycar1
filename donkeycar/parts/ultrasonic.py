@@ -7,7 +7,7 @@ import numpy as np
 import RPi.GPIO as GPIO
 
 class Ultrasonic():
-    def __init__(self, gpio_trigger = 12, gpio_echo = 16, poll_delay=1, name=''):
+    def __init__(self, gpio_trigger = 18, gpio_echo = 17, poll_delay=1, name=''):
         self.gpio_trigger = gpio_trigger
         self.gpio_echo = gpio_echo
         self.poll_delay = poll_delay

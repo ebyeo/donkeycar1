@@ -33,10 +33,12 @@ var driveHandler = new function() {
     var vehicle_id = ""
     var driveURL = ""
     var vehicleURL = ""
+    var ultrasonicSensorURL = ""
 
     this.load = function() {
       driveURL = '/drive'
       vehicleURL = '/drive'
+      ultrasonicSensorURL = '/ultrasonic'
 
       setBindings()
 
@@ -63,8 +65,9 @@ var driveHandler = new function() {
         console.log("Device Orientation not supported by browser, setting control mode to joystick.");
         state.controlMode = 'joystick';
       }
-    };
 
+      setInterval(ultrasonicSensorRequest, timeout);
+    };
 
     var setBindings = function() {
 
@@ -127,6 +130,14 @@ var driveHandler = new function() {
 
     };
 
+    var timeout = 300 //milliseconds
+    function ultrasonicSensorRequest() {
+        $.ajax({
+            url: ultrasonicSensorURL
+        }).done(function(data) {
+            console.log("resonse is: " + data);
+        });
+    }
 
     function bindNipple(manager) {
       manager.on('start', function(evt, data) {
