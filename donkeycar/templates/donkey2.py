@@ -143,7 +143,7 @@ def drive(cfg, model_path=None, use_joystick=False):
     
     #add tub to save data
     inputs=['cam/image_array', 'cam_back/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance', 'ultrasonic_back/distance', 'ultrasonic_back_left/distance', 'ultrasonic_back_right/distance', 'ultrasonic_left/distance', 'ultrasonic_right/distance', 'user/angle', 'user/throttle', 'user/mode']
-    types=['image_array', 'image_array', 'float', 'float', 'float',  'str']
+    types=['image_array', 'image_array', 'float', 'float', 'float', 'float', 'float', 'float', 'float', 'float', 'float', 'float', 'str']
     
     th = TubHandler(path=cfg.DATA_PATH)
     tub = th.new_tub_writer(inputs=inputs, types=types)

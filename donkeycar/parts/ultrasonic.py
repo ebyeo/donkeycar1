@@ -55,14 +55,19 @@ class Ultrasonic():
         StopTime = time.time()
 		
         # save StartTime
-        timeout = time.time() + 0.5
-        while GPIO.input(self.gpio_echo) == 0 and time.time() < timeout:
+        timeout = time.time() + 0.1
+        while GPIO.input(self.gpio_echo) == 0:
             StartTime = time.time()
+            if StartTime > timeout:
+               break
+
 
         # save time of arrival
-        timeout = time.time() + 0.5
-        while GPIO.input(self.gpio_echo) == 1 and time.time() < timeout:
+        timeout = time.time() + 0.1
+        while GPIO.input(self.gpio_echo) == 1:
             StopTime = time.time()
+            if StopTime > timeout:
+               break
 			
         # time difference between start and arrival
         TimeElapsed = StopTime - StartTime

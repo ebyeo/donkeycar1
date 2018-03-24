@@ -120,9 +120,9 @@ class LocalWebController(tornado.web.Application):
         handlers = [
             (r"/", tornado.web.RedirectHandler, dict(url="/drive")),
             (r"/drive", DriveAPI),
+            (r"/drive", UltrasonicSensorAPI),
             (r"/video_front",VideoAPI),
             (r"/video_back",VideoAPI),
-            (r"/ultrasonic",UltrasonicSensorAPI),
             (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": self.static_file_path}),
             ]
 
@@ -168,17 +168,17 @@ class LocalWebController(tornado.web.Application):
 class UltrasonicSensorAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.coroutine
-	def get(self):
+    def get(self):
+        print("inside ultrasonic loop")
         ioloop = tornado.ioloop.IOLoop.current()
         interval = .1
         while True:
-			
             distances = [self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance, self.application.ultrasonic_back_distance, self.application.ultrasonic_back_left_distance, self.application.ultrasonic_back_right_distance, self.application.ultrasonic_left_distance, self.application.ultrasonic_right_distance]
-            
-			self.set_header("Content-Type", "application/json")
+            print(distances)
+            self.set_header("Content-Type", "application/json")
             self.write(json.dumps(list(distances),default=json_util.default))
-            print(json.dumps(list(distances))
-		
+            print(json.dumps(list(distances)))
+
             yield tornado.gen.Task(ioloop.add_timeout, ioloop.time() + interval)
 			
 class DriveAPI(tornado.web.RequestHandler):
