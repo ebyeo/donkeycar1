@@ -10,7 +10,10 @@ flask
 eventlet
 moviepy
 pandas
+bson
 
 [pi]
 picamera
 Adafruit_PCA9685
+RPi.GPIO
+pygame

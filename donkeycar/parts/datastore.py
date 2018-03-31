@@ -660,7 +660,6 @@ class TubGroup(Tub):
         self.meta = {'inputs': list(self.input_types.keys()),
                      'types': list(self.input_types.values())}
 
-
         self.df = pd.concat([t.df for t in tubs], axis=0, join='inner')
 
 

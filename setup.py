@@ -43,12 +43,15 @@ setup(name='donkeycar',
                       'eventlet',
                       'moviepy',
                       'pandas',
+                      'pymongo',
                      ],
 
     extras_require={
                     'pi': [
                         'picamera',
                         'Adafruit_PCA9685',
+                        'RPi.GPIO',
+                        'pygame',
                         ]
                     },
     package_data={

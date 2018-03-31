@@ -17,17 +17,17 @@ from docopt import docopt
 import donkeycar as dk
 
 #import parts
-from donkeycar.parts.camera import Webcam
-from donkeycar.parts.ultrasonic import Ultrasonic
 from donkeycar.parts.transform import Lambda
-from donkeycar.parts.keras import KerasCategorical
-from donkeycar.parts.actuator import PCA9685, PWMSteering, PWMThrottle
+from donkeycar.parts.keras import KerasRearImageAndUltrasonicSensors
 from donkeycar.parts.datastore import TubHandler, TubGroup
 from donkeycar.parts.controller import LocalWebController, JoystickController
-
+import numpy as np
 
 
 def drive(cfg, model_path=None, use_joystick=False):
+    from donkeycar.parts.camera import Webcam
+    from donkeycar.parts.ultrasonic import Ultrasonic
+    from donkeycar.parts.actuator import PCA9685, PWMSteering, PWMThrottle
     '''
     Construct a working robotic vehicle from many parts.
     Each part runs as a job in the Vehicle loop, calling either
@@ -98,7 +98,7 @@ def drive(cfg, model_path=None, use_joystick=False):
     V.add(pilot_condition_part, inputs=['user/mode'], outputs=['run_pilot'])
     
     #Run the pilot if the mode is not user.
-    kl = KerasCategorical()
+    kl = KerasRearImageAndUltrasonicSensors()
     if model_path:
         kl.load(model_path)
     
@@ -158,17 +158,18 @@ def drive(cfg, model_path=None, use_joystick=False):
 
 def train(cfg, tub_names, model_name):
     '''
-    use the specified data in tub_names to train an artifical neural network
+    use the specified data in tub_names to train an artificial neural network
     saves the output trained model as model_name
     '''
-    X_keys = ['cam/image_array']
+    X_keys = ['cam/image_array', 'cam_back/image_array', 'ultrasonic_array']
     y_keys = ['user/angle', 'user/throttle']
 
     def rt(record):
         record['user/angle'] = dk.utils.linear_bin(record['user/angle'])
+        record['ultrasonic_array'] = np.array([ record['ultrasonic_front/distance'], record['ultrasonic_front_left/distance'], record['ultrasonic_front_right/distance'], record['ultrasonic_back/distance'], record['ultrasonic_back_left/distance'], record['ultrasonic_back_right/distance'], record['ultrasonic_left/distance'], record['ultrasonic_right/distance'] ])
         return record
 
-    kl = KerasCategorical()
+    kl = KerasRearImageAndUltrasonicSensors()
     print('tub_names', tub_names)
     if not tub_names:
         tub_names = os.path.join(cfg.DATA_PATH, '*')

@@ -144,6 +144,28 @@ class KerasIMU(KerasPilot):
         return steering[0][0], throttle[0][0]
 
 
+class KerasRearImageAndUltrasonicSensors(KerasPilot):
+    def __init__(self, model=None, num_ultrasonic_inputs = 8, *args, **kwargs):
+        super(KerasRearImageAndUltrasonicSensors, self).__init__(*args, **kwargs)
+        self.num_ultrasonic_inputs = num_ultrasonic_inputs
+        if model:
+            self.model = model
+        else:
+            self.model = default_rearImageAndUltrasonicSensors(num_ultrasonic_inputs = num_ultrasonic_inputs)
+        
+    def run(self, img_arr, img_arr_back, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, ultrasonic_back_distance, ultrasonic_back_left_distance, ultrasonic_back_right_distance, ultrasonic_left_distance, ultrasonic_right_distance):
+        print('ulrasonic arrage start')
+        img_arr = img_arr.reshape((1,) + img_arr.shape)
+        img_arr_back = img_arr_back.reshape((1,) + img_arr_back.shape)
+        ultrasonic_arr = np.array([ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, ultrasonic_back_distance, ultrasonic_back_left_distance, ultrasonic_back_right_distance, ultrasonic_left_distance, ultrasonic_right_distance]).reshape(1, self.num_ultrasonic_inputs)
+        print('ulrasonic arrage: ', ultrasonic_arr)
+        steering, throttle = self.model.predict([img_arr, img_arr_back, ultrasonic_arr])
+        #print('throttle', throttle)
+        #angle_certainty = max(angle_binned[0])
+        steering = outputs[0]
+        throttle = outputs[1]
+        return steering[0][0], throttle[0][0]
+    
 
 def default_categorical():
     from keras.layers import Input, Dense, merge
@@ -303,4 +325,65 @@ def default_imu(num_outputs, num_imu_inputs):
     model.compile(optimizer='adam',
                   loss='mse')
     
+    return model
+	
+def default_rearImageAndUltrasonicSensors(num_ultrasonic_inputs):
+
+    from keras.layers import Input, Dense
+    from keras.models import Model
+    from keras.layers import Convolution2D, MaxPooling2D, Reshape, BatchNormalization
+    from keras.layers import Activation, Dropout, Flatten, Cropping2D, Lambda
+    from keras.layers.merge import concatenate
+    
+    img_in = Input(shape=(120,160,3), name='img_in')
+    img_back_in = Input(shape=(120,160,3), name='img_back_in')
+    ultrasonic_in = Input(shape=(num_ultrasonic_inputs,), name="ultrasonic_in")
+    
+    x = img_in
+    x = Cropping2D(cropping=((60,0), (0,0)))(x) #trim 60 pixels off top
+    #x = Lambda(lambda x: x/127.5 - 1.)(x) # normalize and re-center
+    x = Convolution2D(24, (5,5), strides=(2,2), activation='relu')(x)
+    x = Convolution2D(32, (5,5), strides=(2,2), activation='relu')(x)
+    x = Convolution2D(64, (3,3), strides=(2,2), activation='relu')(x)
+    x = Convolution2D(64, (3,3), strides=(1,1), activation='relu')(x)
+    x = Convolution2D(64, (3,3), strides=(1,1), activation='relu')(x)
+    x = Flatten(name='flattened')(x)
+    x = Dense(100, activation='relu')(x)
+    x = Dropout(.1)(x)
+    
+    xb = img_back_in
+    xb = Cropping2D(cropping=((60,0), (0,0)))(xb) #trim 60 pixels off top
+    #xb = Lambda(lambda x: x/127.5 - 1.)(xb) # normalize and re-center
+    xb = Convolution2D(24, (5,5), strides=(2,2), activation='relu')(xb)
+    xb = Convolution2D(32, (5,5), strides=(2,2), activation='relu')(xb)
+    xb = Convolution2D(64, (3,3), strides=(2,2), activation='relu')(xb)
+    xb = Convolution2D(64, (3,3), strides=(1,1), activation='relu')(xb)
+    xb = Convolution2D(64, (3,3), strides=(1,1), activation='relu')(xb)
+    xb = Flatten(name='flattened_back')(xb)
+    xb = Dense(100, activation='relu')(xb)
+    xb = Dropout(.1)(xb)
+    
+    y = ultrasonic_in
+    y = Dense(14, activation='relu')(y)
+    y = Dense(14, activation='relu')(y)
+    y = Dense(14, activation='relu')(y)
+    
+    z = concatenate([x, xb, y])
+    z = Dense(50, activation='relu')(z)
+    z = Dropout(.1)(z)
+    z = Dense(50, activation='relu')(z)
+    z = Dropout(.1)(z)
+
+    #categorical output of the angle
+    angle_out = Dense(15, activation='softmax', name='angle_out')(z)        # Connect every input with every output and output 15 hidden units. Use Softmax to give percentage. 15 categories and find best one based off percentage 0.0-1.0
+    
+    #continous output of throttle
+    throttle_out = Dense(1, activation='relu', name='throttle_out')(z)      # Reduce to 1 number, Positive number only
+
+    model = Model(inputs=[img_in, img_back_in, ultrasonic_in], outputs=[angle_out, throttle_out])
+    
+    model.compile(optimizer='adam',
+                  loss={'angle_out': 'categorical_crossentropy', 
+                        'throttle_out': 'mean_absolute_error'},
+                  loss_weights={'angle_out': 0.9, 'throttle_out': .001})
     return model

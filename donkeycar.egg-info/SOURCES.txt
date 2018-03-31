@@ -27,6 +27,7 @@ donkeycar/parts/lidar.py
 donkeycar/parts/simulation.py
 donkeycar/parts/teensy.py
 donkeycar/parts/transform.py
+donkeycar/parts/ultrasonic.py
 donkeycar/parts/web_controller/__init__.py
 donkeycar/parts/web_controller/web.py
 donkeycar/tests/__init__.py
