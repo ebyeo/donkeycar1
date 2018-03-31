@@ -20,6 +20,7 @@ var driveHandler = new function() {
                   'controlMode': 'joystick',
                   'maxThrottle' : 1,
                   'throttleMode' : 'user',
+                  'distances' : 'None',
                   }
 
     var joystick_options = {}
@@ -135,7 +136,8 @@ var driveHandler = new function() {
         $.ajax({
             url: ultrasonicSensorURL
         }).done(function(data) {
-            console.log("resonse is: " + data);
+            state.distances = data;
+            $('#distances').text(state.distances);
         });
     }
 
@@ -178,6 +180,7 @@ var driveHandler = new function() {
       $("#throttleInput").val(state.tele.user.throttle);
       $("#angleInput").val(state.tele.user.angle);
       $('#mode_select').val(state.driveMode);
+      $('#distances').text(state.distances);
 
       var throttlePercent = Math.round(Math.abs(state.tele.user.throttle) * 100) + '%';
       var steeringPercent = Math.round(Math.abs(state.tele.user.angle) * 100) + '%';
