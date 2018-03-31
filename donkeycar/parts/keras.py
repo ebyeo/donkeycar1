@@ -154,17 +154,14 @@ class KerasRearImageAndUltrasonicSensors(KerasPilot):
             self.model = default_rearImageAndUltrasonicSensors(num_ultrasonic_inputs = num_ultrasonic_inputs)
         
     def run(self, img_arr, img_arr_back, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, ultrasonic_back_distance, ultrasonic_back_left_distance, ultrasonic_back_right_distance, ultrasonic_left_distance, ultrasonic_right_distance):
-        print('ulrasonic arrage start')
         img_arr = img_arr.reshape((1,) + img_arr.shape)
         img_arr_back = img_arr_back.reshape((1,) + img_arr_back.shape)
         ultrasonic_arr = np.array([ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, ultrasonic_back_distance, ultrasonic_back_left_distance, ultrasonic_back_right_distance, ultrasonic_left_distance, ultrasonic_right_distance]).reshape(1, self.num_ultrasonic_inputs)
-        print('ulrasonic arrage: ', ultrasonic_arr)
         steering, throttle = self.model.predict([img_arr, img_arr_back, ultrasonic_arr])
         #print('throttle', throttle)
         #angle_certainty = max(angle_binned[0])
-        steering = outputs[0]
-        throttle = outputs[1]
-        return steering[0][0], throttle[0][0]
+        angle_unbinned = dk.utils.linear_unbin(steering)
+        return angle_unbinned, throttle[0][0]
     
 
 def default_categorical():

@@ -102,7 +102,8 @@ def drive(cfg, model_path=None, use_joystick=False):
     if model_path:
         kl.load(model_path)
     
-    V.add(kl, inputs=['cam/image_array'], 
+    V.add(kl, 
+          inputs=['cam/image_array', 'cam_back/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance', 'ultrasonic_back/distance', 'ultrasonic_back_left/distance', 'ultrasonic_back_right/distance', 'ultrasonic_left/distance', 'ultrasonic_right/distance'],
           outputs=['pilot/angle', 'pilot/throttle'],
           run_condition='run_pilot')
     

@@ -170,6 +170,7 @@ class UltrasonicSensorAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.coroutine
     def post(self):
+        print("inside ultrasonic sensor api")
         interval = .1
         distances = [self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance, self.application.ultrasonic_back_distance, self.application.ultrasonic_back_left_distance, self.application.ultrasonic_back_right_distance, self.application.ultrasonic_left_distance, self.application.ultrasonic_right_distance]
         self.set_header("Content-Type", "application/json")
@@ -178,13 +179,10 @@ class UltrasonicSensorAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.coroutine
     def get(self):
-        print("inside get ultrasonic loop")
         interval = .1
         distances = [self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance, self.application.ultrasonic_back_distance, self.application.ultrasonic_back_left_distance, self.application.ultrasonic_back_right_distance, self.application.ultrasonic_left_distance, self.application.ultrasonic_right_distance]
-        print(distances)
         self.set_header("Content-Type", "application/json")
         self.write(json.dumps(list(distances),default=json_util.default))
-        print(json.dumps(list(distances)))
 			
 class DriveAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
