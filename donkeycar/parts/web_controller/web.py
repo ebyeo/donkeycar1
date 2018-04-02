@@ -138,7 +138,6 @@ class LocalWebController(tornado.web.Application):
         self.listen(self.port)
         tornado.ioloop.IOLoop.instance().start()
 
-
     def run_threaded(self, img_arr=None, img_arr_back=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None, ultrasonic_back_distance=None, ultrasonic_back_left_distance=None, ultrasonic_back_right_distance=None, ultrasonic_left_distance=None, ultrasonic_right_distance=None):
         self.img_arr = img_arr
         self.img_arr_back = img_arr_back
@@ -165,6 +164,9 @@ class LocalWebController(tornado.web.Application):
         self.ultrasonic_left_distance = ultrasonic_left_distance
         self.ultrasonic_right_distance = ultrasonic_right_distance
         return self.angle, self.throttle, self.mode, self.recording
+		
+    def shutdown(self):
+        pass
 
 class UltrasonicSensorAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
