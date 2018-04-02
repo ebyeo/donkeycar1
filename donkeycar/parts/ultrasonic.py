@@ -68,8 +68,8 @@ class Ultrasonic():
     def shutdown(self):
         print('Shutdown ultrasonic', self.name)
         self.on = False
-        GPIO.cleanup()
         time.sleep(1)
+        GPIO.cleanup()
 
     def poll_distance(self):
 
@@ -128,12 +128,12 @@ class MockUltrasonic():
         return self.distance
 
     def shutdown(self):
-        print('Shutdown ultrasonic', self.id, ':', self.name)
+        print('Shutdown mock ultrasonic', self.name)
         self.on = False
         time.sleep(1)
 		
     def poll_distance(self):
-        return 0.5
+        return 0.0
 		
 if __name__ == "__main__":
 
