@@ -52,7 +52,7 @@ class PiCamera(BaseCamera):
     def shutdown(self):
         # indicate that the thread should be stopped
         self.on = False
-        print('stoping PiCamera')
+        print('stopping PiCamera')
         time.sleep(.5)
         self.stream.close()
         self.rawCapture.close()
@@ -110,7 +110,7 @@ class Webcam(BaseCamera):
     def shutdown(self):
         # indicate that the thread should be stopped
         self.on = False
-        print('stoping Webcam', self.name)
+        print('stopping Webcam', self.name)
         time.sleep(.5)
 
 class MockCamera(BaseCamera):
@@ -121,7 +121,7 @@ class MockCamera(BaseCamera):
         if image is not None:
             self.frame = image
         else:
-            self.frame = Image.new('RGB', resolution)
+            self.frame = np.asarray(Image.new('RGB', resolution))
 
     def update(self):
         pass
@@ -167,3 +167,8 @@ class ImageListCamera(BaseCamera):
 
     def shutdown(self):
         pass
+
+if __name__ == "__main__":
+
+    m = MockCamera()
+    print(m.frame.shape)
