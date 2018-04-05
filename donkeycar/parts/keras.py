@@ -145,7 +145,7 @@ class KerasIMU(KerasPilot):
 
 
 class KerasRearImageAndUltrasonicSensors(KerasPilot):
-    def __init__(self, model=None, num_ultrasonic_inputs = 8, *args, **kwargs):
+    def __init__(self, model=None, num_ultrasonic_inputs = 3, *args, **kwargs):
         super(KerasRearImageAndUltrasonicSensors, self).__init__(*args, **kwargs)
         self.num_ultrasonic_inputs = num_ultrasonic_inputs
         if model:
@@ -153,10 +153,9 @@ class KerasRearImageAndUltrasonicSensors(KerasPilot):
         else:
             self.model = default_rearImageAndUltrasonicSensors(num_ultrasonic_inputs = num_ultrasonic_inputs)
         
-    def run(self, img_arr, img_arr_back, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, ultrasonic_back_distance, ultrasonic_back_left_distance, ultrasonic_back_right_distance, ultrasonic_left_distance, ultrasonic_right_distance):
+    def run(self, img_arr, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance):
         img_arr = img_arr.reshape((1,) + img_arr.shape)
-        img_arr_back = img_arr_back.reshape((1,) + img_arr_back.shape)
-        ultrasonic_arr = np.array([ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, ultrasonic_back_distance, ultrasonic_back_left_distance, ultrasonic_back_right_distance, ultrasonic_left_distance, ultrasonic_right_distance]).reshape(1, self.num_ultrasonic_inputs)
+        ultrasonic_arr = np.array([ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance]).reshape(1, self.num_ultrasonic_inputs)
         steering, throttle = self.model.predict([img_arr, img_arr_back, ultrasonic_arr])
         #print('throttle', throttle)
         #angle_certainty = max(angle_binned[0])
@@ -333,7 +332,6 @@ def default_rearImageAndUltrasonicSensors(num_ultrasonic_inputs):
     from keras.layers.merge import concatenate
     
     img_in = Input(shape=(120,160,3), name='img_in')
-    img_back_in = Input(shape=(120,160,3), name='img_back_in')
     ultrasonic_in = Input(shape=(num_ultrasonic_inputs,), name="ultrasonic_in")
     
     x = img_in
@@ -348,24 +346,12 @@ def default_rearImageAndUltrasonicSensors(num_ultrasonic_inputs):
     x = Dense(100, activation='relu')(x)
     x = Dropout(.1)(x)
     
-    xb = img_back_in
-    xb = Cropping2D(cropping=((60,0), (0,0)))(xb) #trim 60 pixels off top
-    #xb = Lambda(lambda x: x/127.5 - 1.)(xb) # normalize and re-center
-    xb = Convolution2D(24, (5,5), strides=(2,2), activation='relu')(xb)
-    xb = Convolution2D(32, (5,5), strides=(2,2), activation='relu')(xb)
-    xb = Convolution2D(64, (3,3), strides=(2,2), activation='relu')(xb)
-    xb = Convolution2D(64, (3,3), strides=(1,1), activation='relu')(xb)
-    xb = Convolution2D(64, (3,3), strides=(1,1), activation='relu')(xb)
-    xb = Flatten(name='flattened_back')(xb)
-    xb = Dense(100, activation='relu')(xb)
-    xb = Dropout(.1)(xb)
-    
     y = ultrasonic_in
     y = Dense(14, activation='relu')(y)
     y = Dense(14, activation='relu')(y)
     y = Dense(14, activation='relu')(y)
     
-    z = concatenate([x, xb, y])
+    z = concatenate([x, y])
     z = Dense(50, activation='relu')(z)
     z = Dropout(.1)(z)
     z = Dense(50, activation='relu')(z)
