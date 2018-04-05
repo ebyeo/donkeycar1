@@ -156,7 +156,7 @@ class KerasRearImageAndUltrasonicSensors(KerasPilot):
     def run(self, img_arr, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance):
         img_arr = img_arr.reshape((1,) + img_arr.shape)
         ultrasonic_arr = np.array([ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance]).reshape(1, self.num_ultrasonic_inputs)
-        steering, throttle = self.model.predict([img_arr, img_arr_back, ultrasonic_arr])
+        steering, throttle = self.model.predict([img_arr, ultrasonic_arr])
         #print('throttle', throttle)
         #angle_certainty = max(angle_binned[0])
         angle_unbinned = dk.utils.linear_unbin(steering)
@@ -363,7 +363,7 @@ def default_rearImageAndUltrasonicSensors(num_ultrasonic_inputs):
     #continous output of throttle
     throttle_out = Dense(1, activation='relu', name='throttle_out')(z)      # Reduce to 1 number, Positive number only
 
-    model = Model(inputs=[img_in, img_back_in, ultrasonic_in], outputs=[angle_out, throttle_out])
+    model = Model(inputs=[img_in, ultrasonic_in], outputs=[angle_out, throttle_out])
     
     model.compile(optimizer='adam',
                   loss={'angle_out': 'categorical_crossentropy', 
