@@ -123,7 +123,6 @@ class LocalWebController(tornado.web.Application):
             (r"/drive", DriveAPI),
             (r"/ultrasonic", UltrasonicSensorAPI),
             (r"/video_front",VideoAPI),
-            (r"/video_back",VideoAPI),
             (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": self.static_file_path}),
             ]
 
@@ -138,31 +137,19 @@ class LocalWebController(tornado.web.Application):
         self.listen(self.port)
         tornado.ioloop.IOLoop.instance().start()
 
-    def run_threaded(self, img_arr=None, img_arr_back=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None, ultrasonic_back_distance=None, ultrasonic_back_left_distance=None, ultrasonic_back_right_distance=None, ultrasonic_left_distance=None, ultrasonic_right_distance=None):
+    def run_threaded(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None):
         self.img_arr = img_arr
-        self.img_arr_back = img_arr_back
         self.ultrasonic_front_distance = ultrasonic_front_distance
         self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
         self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
-        self.ultrasonic_back_distance = ultrasonic_back_distance
-        self.ultrasonic_back_left_distance = ultrasonic_back_left_distance
-        self.ultrasonic_back_right_distance = ultrasonic_back_right_distance
-        self.ultrasonic_left_distance = ultrasonic_left_distance
-        self.ultrasonic_right_distance = ultrasonic_right_distance
 		
         return self.angle, self.throttle, self.mode, self.recording
         
-    def run(self, img_arr=None, img_arr_back=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None, ultrasonic_back_distance=None, ultrasonic_back_left_distance=None, ultrasonic_back_right_distance=None, ultrasonic_left_distance=None, ultrasonic_right_distance=None):
+    def run(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None):
         self.img_arr = img_arr
-        self.img_arr_back = img_arr_back
         self.ultrasonic_front_distance = ultrasonic_front_distance
         self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
         self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
-        self.ultrasonic_back_distance = ultrasonic_back_distance
-        self.ultrasonic_back_left_distance = ultrasonic_back_left_distance
-        self.ultrasonic_back_right_distance = ultrasonic_back_right_distance
-        self.ultrasonic_left_distance = ultrasonic_left_distance
-        self.ultrasonic_right_distance = ultrasonic_right_distance
         return self.angle, self.throttle, self.mode, self.recording
 		
     def shutdown(self):
@@ -174,7 +161,7 @@ class UltrasonicSensorAPI(tornado.web.RequestHandler):
     def post(self):
         print("inside ultrasonic sensor api")
         interval = .1
-        distances = [self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance, self.application.ultrasonic_back_distance, self.application.ultrasonic_back_left_distance, self.application.ultrasonic_back_right_distance, self.application.ultrasonic_left_distance, self.application.ultrasonic_right_distance]
+        distances = [self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance]
         self.set_header("Content-Type", "application/json")
         self.write(json.dumps(list(distances),default=json_util.default))
 
@@ -182,7 +169,7 @@ class UltrasonicSensorAPI(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
         interval = .1
-        distances = [self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance, self.application.ultrasonic_back_distance, self.application.ultrasonic_back_left_distance, self.application.ultrasonic_back_right_distance, self.application.ultrasonic_left_distance, self.application.ultrasonic_right_distance]
+        distances = [self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance]
         self.set_header("Content-Type", "application/json")
         self.write(json.dumps(list(distances),default=json_util.default))
 			
@@ -224,10 +211,7 @@ class VideoAPI(tornado.web.RequestHandler):
             interval = .1
             if self.served_image_timestamp + interval < time.time():
 
-                if dir == '/video_front':
-                    img = utils.arr_to_binary(self.application.img_arr)
-                else:
-                    img = utils.arr_to_binary(self.application.img_arr_back)
+            img = utils.arr_to_binary(self.application.img_arr)
 
                 self.write(my_boundary)
                 self.write("Content-type: image/jpeg\r\n")

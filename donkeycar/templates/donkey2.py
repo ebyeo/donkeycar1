@@ -43,9 +43,6 @@ def drive(cfg, model_path=None, use_joystick=False):
     cam_front = Webcam(resolution=cfg.CAMERA_RESOLUTION, src = 0, name = 'front')
     V.add(cam_front, outputs=['cam/image_array'], threaded=True)
 
-    cam_back = Webcam(resolution=cfg.CAMERA_RESOLUTION, src = 1, name = 'back')
-    V.add(cam_back, outputs=['cam_back/image_array'], threaded=True)
-    
     us_front = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_ECHO, name='front')
     V.add(us_front, outputs=['ultrasonic_front/distance'], threaded=True)
 	
@@ -54,21 +51,6 @@ def drive(cfg, model_path=None, use_joystick=False):
 	
     us_front_right = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_RIGHT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_RIGHT_ECHO, name='front right')
     V.add(us_front_right, outputs=['ultrasonic_front_right/distance'], threaded=True)
-	
-    us_back = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_BACK_TRIGGER, gpio_echo=cfg.ULTRASONIC_BACK_ECHO, name='back')
-    V.add(us_back, outputs=['ultrasonic_back/distance'], threaded=True)
-	
-    us_back_left = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_BACK_LEFT_TRIGGER, gpio_echo=cfg.ULTRASONIC_BACK_LEFT_ECHO, name='back left')
-    V.add(us_back_left, outputs=['ultrasonic_back_left/distance'], threaded=True)
-	
-    us_back_right = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_BACK_RIGHT_TRIGGER, gpio_echo=cfg.ULTRASONIC_BACK_RIGHT_ECHO, name='back right')
-    V.add(us_back_right, outputs=['ultrasonic_back_right/distance'], threaded=True)
-	
-    us_left = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_LEFT_TRIGGER, gpio_echo=cfg.ULTRASONIC_LEFT_ECHO, name='left')
-    V.add(us_left, outputs=['ultrasonic_left/distance'], threaded=True)
-	
-    us_right = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_RIGHT_TRIGGER, gpio_echo=cfg.ULTRASONIC_RIGHT_ECHO, name='right')
-    V.add(us_right, outputs=['ultrasonic_right/distance'], threaded=True)
 	
     if use_joystick or cfg.USE_JOYSTICK_AS_DEFAULT:
         #modify max_throttle closer to 1.0 to have more power
@@ -82,7 +64,7 @@ def drive(cfg, model_path=None, use_joystick=False):
         ctr = LocalWebController()
     
     V.add(ctr, 
-          inputs=['cam/image_array', 'cam_back/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance', 'ultrasonic_back/distance', 'ultrasonic_back_left/distance', 'ultrasonic_back_right/distance', 'ultrasonic_left/distance', 'ultrasonic_right/distance'],
+          inputs=['cam/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance'],
           outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],
           threaded=True)
 
@@ -103,7 +85,7 @@ def drive(cfg, model_path=None, use_joystick=False):
         kl.load(model_path)
     
     V.add(kl, 
-          inputs=['cam/image_array', 'cam_back/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance', 'ultrasonic_back/distance', 'ultrasonic_back_left/distance', 'ultrasonic_back_right/distance', 'ultrasonic_left/distance', 'ultrasonic_right/distance'],
+          inputs=['cam/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance'],
           outputs=['pilot/angle', 'pilot/throttle'],
           run_condition='run_pilot')
     
@@ -143,8 +125,8 @@ def drive(cfg, model_path=None, use_joystick=False):
     V.add(throttle, inputs=['throttle'])
     
     #add tub to save data
-    inputs=['cam/image_array', 'cam_back/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance', 'ultrasonic_back/distance', 'ultrasonic_back_left/distance', 'ultrasonic_back_right/distance', 'ultrasonic_left/distance', 'ultrasonic_right/distance', 'user/angle', 'user/throttle', 'user/mode']
-    types=['image_array', 'image_array', 'float', 'float', 'float', 'float', 'float', 'float', 'float', 'float', 'float', 'float', 'str']
+    inputs=['cam/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance', 'user/angle', 'user/throttle', 'user/mode']
+    types=['image_array', 'float', 'float', 'float', 'float', 'float', 'str']
     
     th = TubHandler(path=cfg.DATA_PATH)
     tub = th.new_tub_writer(inputs=inputs, types=types)
@@ -162,12 +144,12 @@ def train(cfg, tub_names, model_name):
     use the specified data in tub_names to train an artificial neural network
     saves the output trained model as model_name
     '''
-    X_keys = ['cam/image_array', 'cam_back/image_array', 'ultrasonic_array']
+    X_keys = ['cam/image_array', 'ultrasonic_array']
     y_keys = ['user/angle', 'user/throttle']
 
     def rt(record):
         record['user/angle'] = dk.utils.linear_bin(record['user/angle'])
-        record['ultrasonic_array'] = np.array([ record['ultrasonic_front/distance'], record['ultrasonic_front_left/distance'], record['ultrasonic_front_right/distance'], record['ultrasonic_back/distance'], record['ultrasonic_back_left/distance'], record['ultrasonic_back_right/distance'], record['ultrasonic_left/distance'], record['ultrasonic_right/distance'] ])
+        record['ultrasonic_array'] = np.array([ record['ultrasonic_front/distance'], record['ultrasonic_front_left/distance'], record['ultrasonic_front_right/distance'] ])
         return record
 
     kl = KerasRearImageAndUltrasonicSensors()
@@ -193,10 +175,6 @@ def train(cfg, tub_names, model_name):
              saved_model_path=model_path,
              steps=steps_per_epoch,
              train_split=cfg.TRAIN_TEST_SPLIT)
-
-
-
-
 
 if __name__ == '__main__':
     args = docopt(__doc__)
