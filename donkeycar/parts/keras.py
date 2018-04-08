@@ -153,14 +153,25 @@ class KerasRearImageAndUltrasonicSensors(KerasPilot):
         else:
             self.model = default_rearImageAndUltrasonicSensors(num_ultrasonic_inputs = num_ultrasonic_inputs)
         
-    def run(self, img_arr, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance):
+    def run(self, img_arr, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, obstacle):
         img_arr = img_arr.reshape((1,) + img_arr.shape)
         ultrasonic_arr = np.array([ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance]).reshape(1, self.num_ultrasonic_inputs)
         steering, throttle = self.model.predict([img_arr, ultrasonic_arr])
         #print('throttle', throttle)
         #angle_certainty = max(angle_binned[0])
         angle_unbinned = dk.utils.linear_unbin(steering)
-        return angle_unbinned, throttle[0][0]
+		throttle_final = throttle[0][0]
+		
+		if obstacle = 'stop':
+		    throttle_final = 0
+        elif obstacle = 'overtake-right':
+			angle_final = 1.0
+        elif obstacle = 'overtake-left':
+			angle_final = -1.0
+		else:
+		    angle_final = angle_unbinned
+			
+		return angle_final, throttle_final
     
 
 def default_categorical():

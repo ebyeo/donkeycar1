@@ -21,6 +21,7 @@ var driveHandler = new function() {
                   'maxThrottle' : 1,
                   'throttleMode' : 'user',
                   'distances' : 'None',
+                  'obstacle' : 'None',
                   }
 
     var joystick_options = {}
@@ -35,11 +36,13 @@ var driveHandler = new function() {
     var driveURL = ""
     var vehicleURL = ""
     var ultrasonicSensorURL = ""
+    var obstacleURL = ""
 
     this.load = function() {
       driveURL = '/drive'
       vehicleURL = '/drive'
       ultrasonicSensorURL = '/ultrasonic'
+      obstacleURL = '/obstacle'
 
       setBindings()
 
@@ -68,6 +71,7 @@ var driveHandler = new function() {
       }
 
       setInterval(ultrasonicSensorRequest, timeout);
+      setInterval(obstacleRequest, timeout);
     };
 
     var setBindings = function() {
@@ -141,6 +145,15 @@ var driveHandler = new function() {
         });
     }
 
+    function obstacleRequest() {
+        $.ajax({
+            url: obstacleURL
+        }).done(function(data) {
+            state.obstacle = data;
+            $('#obstacle').text(state.obstacle);
+        });
+    }
+
     function bindNipple(manager) {
       manager.on('start', function(evt, data) {
         state.tele.user.angle = 0
@@ -181,6 +194,7 @@ var driveHandler = new function() {
       $("#angleInput").val(state.tele.user.angle);
       $('#mode_select').val(state.driveMode);
       $('#distances').text(state.distances);
+      $('#obstacle').text(state.obstacle);
 
       var throttlePercent = Math.round(Math.abs(state.tele.user.throttle) * 100) + '%';
       var steeringPercent = Math.round(Math.abs(state.tele.user.angle) * 100) + '%';

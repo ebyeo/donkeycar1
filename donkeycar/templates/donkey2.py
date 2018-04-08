@@ -25,7 +25,7 @@ import numpy as np
 
 
 def drive(cfg, model_path=None, use_joystick=False):
-    from donkeycar.parts.camera import Webcam
+    from donkeycar.parts.camera import PiCamera
     from donkeycar.parts.ultrasonic import Ultrasonic
     from donkeycar.parts.actuator import PCA9685, PWMSteering, PWMThrottle
     '''
@@ -40,7 +40,7 @@ def drive(cfg, model_path=None, use_joystick=False):
 
     #Initialize car
     V = dk.vehicle.Vehicle()
-    cam_front = Webcam(resolution=cfg.CAMERA_RESOLUTION, src = 0, name = 'front')
+    cam_front = PiCamera(resolution=cfg.CAMERA_RESOLUTION, name = 'front')
     V.add(cam_front, outputs=['cam/image_array'], threaded=True)
 
     us_front = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_ECHO, name='front')
@@ -78,6 +78,13 @@ def drive(cfg, model_path=None, use_joystick=False):
         
     pilot_condition_part = Lambda(pilot_condition)
     V.add(pilot_condition_part, inputs=['user/mode'], outputs=['run_pilot'])
+	
+    #Obstacle detection
+    ob = Obstacle()
+    
+    V.add(ob, 
+          inputs=['cam/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance'],
+          outputs=['pilot/action'])
     
     #Run the pilot if the mode is not user.
     kl = KerasRearImageAndUltrasonicSensors()
@@ -85,10 +92,9 @@ def drive(cfg, model_path=None, use_joystick=False):
         kl.load(model_path)
     
     V.add(kl, 
-          inputs=['cam/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance'],
+          inputs=['cam/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance', 'pilot/action'],
           outputs=['pilot/angle', 'pilot/throttle'],
           run_condition='run_pilot')
-    
     
     #Choose what inputs should change the car.
     def drive_mode(mode, 

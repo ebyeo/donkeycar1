@@ -122,6 +122,7 @@ class LocalWebController(tornado.web.Application):
             (r"/", tornado.web.RedirectHandler, dict(url="/drive")),
             (r"/drive", DriveAPI),
             (r"/ultrasonic", UltrasonicSensorAPI),
+            (r"/obstacle", ObstacleAPI),
             (r"/video_front",VideoAPI),
             (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": self.static_file_path}),
             ]
@@ -137,19 +138,22 @@ class LocalWebController(tornado.web.Application):
         self.listen(self.port)
         tornado.ioloop.IOLoop.instance().start()
 
-    def run_threaded(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None):
+    def run_threaded(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None, obstacle=None):
         self.img_arr = img_arr
         self.ultrasonic_front_distance = ultrasonic_front_distance
         self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
         self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
+		self.obstacle = obstacle
 		
         return self.angle, self.throttle, self.mode, self.recording
         
-    def run(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None):
+    def run(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None, obstacle=None):
         self.img_arr = img_arr
         self.ultrasonic_front_distance = ultrasonic_front_distance
         self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
         self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
+		self.obstacle = obstacle
+
         return self.angle, self.throttle, self.mode, self.recording
 		
     def shutdown(self):
@@ -173,6 +177,13 @@ class UltrasonicSensorAPI(tornado.web.RequestHandler):
         self.set_header("Content-Type", "application/json")
         self.write(json.dumps(list(distances),default=json_util.default))
 			
+class ObstacleAPI(tornado.web.RequestHandler):
+    @tornado.web.asynchronous
+    @tornado.gen.coroutine
+    def get(self):
+        self.set_header("Content-Type", "application/text")
+        self.write(self.obstacle)
+
 class DriveAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.coroutine
