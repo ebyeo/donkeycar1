@@ -11,22 +11,24 @@ Actions are:
 - reverse - for future considerations
 """
 
+import donkeycar.constant as Constant
+
 class Obstacle():
     def __init__(self):
         # initialize default action to go forward
-        self.action = 'forward'
+        self.action = Constant.OBSTACLE_ACTION_FORWARD
     
     def compute_action(self):
         if self.ultrasonic_front_distance <= 50:
             if self.ultrasonic_front_right_distance <= 50:
                 if self.ultrasonic_front_left_distance <= 50:
-                    return 'stop'
+                    return Constant.OBSTACLE_ACTION_STOP
                 else:
-                    return 'overtake-left'
+                    return Constant.OBSTACLE_ACTION_LEFT
             else:
-                return 'overtake-right'
+                return Constant.OBSTACLE_ACTION_RIGHT
         else:
-            return 'forward'
+            return Constant.OBSTACLE_ACTION_FORWARD
 
     def run(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None):
         self.img_arr = img_arr
@@ -40,3 +42,8 @@ class Obstacle():
     def shutdown(self):
         # indicate that the thread should be stopped
         print('stopping obstacle detection')
+
+if __name__ == "__main__":
+    o = Obstacle()
+    print('obstacle:', o.run(ultrasonic_front_distance = 55))
+

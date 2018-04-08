@@ -17,6 +17,7 @@ import numpy as np
 import keras
 
 import donkeycar as dk
+import donkeycar.constant as Constant
 
 
 class KerasPilot():
@@ -154,21 +155,23 @@ class KerasRearImageAndUltrasonicSensors(KerasPilot):
             self.model = default_rearImageAndUltrasonicSensors(num_ultrasonic_inputs = num_ultrasonic_inputs)
         
     def run(self, img_arr, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, obstacle):
-        img_arr = img_arr.reshape((1,) + img_arr.shape)
-        ultrasonic_arr = np.array([ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance]).reshape(1, self.num_ultrasonic_inputs)
-        steering, throttle = self.model.predict([img_arr, ultrasonic_arr])
-        #print('throttle', throttle)
-        #angle_certainty = max(angle_binned[0])
-        angle_unbinned = dk.utils.linear_unbin(steering)
-        angle_final = angle_unbinned
-        throttle_final = throttle[0][0]
-		
-        if obstacle == 'stop':
+        if obstacle == Constant.OBSTACLE_ACTION_STOP:
             throttle_final = 0
-        elif obstacle == 'overtake-right':
+        elif obstacle == Constant.OBSTACLE_ACTION_RIGHT:
             angle_final = 1.0
-        elif obstacle == 'overtake-left':
+            throttle_final = 0.5
+        elif obstacle == Constant.OBSTACLE_ACTION_LEFT:
             angle_final = -1.0
+            throttle_final = 0.5
+        else:
+            img_arr = img_arr.reshape((1,) + img_arr.shape)
+            ultrasonic_arr = np.array([ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance]).reshape(1, self.num_ultrasonic_inputs)
+            steering, throttle = self.model.predict([img_arr, ultrasonic_arr])
+            #print('throttle', throttle)
+            #angle_certainty = max(angle_binned[0])
+            angle_unbinned = dk.utils.linear_unbin(steering)
+            angle_final = angle_unbinned
+            throttle_final = throttle[0][0]
 			
         return angle_final, throttle_final
     
