@@ -160,6 +160,7 @@ class KerasRearImageAndUltrasonicSensors(KerasPilot):
         #print('throttle', throttle)
         #angle_certainty = max(angle_binned[0])
         angle_unbinned = dk.utils.linear_unbin(steering)
+        angle_final = angle_unbinned
         throttle_final = throttle[0][0]
 		
         if obstacle == 'stop':
@@ -168,8 +169,6 @@ class KerasRearImageAndUltrasonicSensors(KerasPilot):
             angle_final = 1.0
         elif obstacle == 'overtake-left':
             angle_final = -1.0
-        else:
-            angle_final = angle_unbinned
 			
         return angle_final, throttle_final
     
