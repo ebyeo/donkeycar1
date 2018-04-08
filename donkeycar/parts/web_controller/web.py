@@ -181,7 +181,6 @@ class ObstacleAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.coroutine
     def get(self):
-        self.set_header("Content-Type", "application/text")
         self.write(self.obstacle)
 
 class DriveAPI(tornado.web.RequestHandler):
