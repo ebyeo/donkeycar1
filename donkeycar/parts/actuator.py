@@ -22,6 +22,7 @@ class PCA9685:
         self.channel = channel
 
     def set_pulse(self, pulse):
+        print("actuator:", self.channel, 0, pulse) 
         self.pwm.set_pwm(self.channel, 0, pulse) 
 
     def run(self, pulse):
