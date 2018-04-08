@@ -16,7 +16,7 @@ class PiCamera(BaseCamera):
 
         from picamera.array import PiRGBArray
         from picamera import PiCamera
-        resolution = (resolution[1], resolution[0])
+        # resolution = (resolution[1], resolution[0])
         # initialize the camera and stream
         self.name = name
         self.camera = PiCamera() #PiCamera gets resolution (height, width)
