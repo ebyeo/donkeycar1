@@ -143,7 +143,7 @@ class LocalWebController(tornado.web.Application):
         self.ultrasonic_front_distance = ultrasonic_front_distance
         self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
         self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
-		self.obstacle = obstacle
+        self.obstacle = obstacle
 		
         return self.angle, self.throttle, self.mode, self.recording
         
@@ -152,7 +152,7 @@ class LocalWebController(tornado.web.Application):
         self.ultrasonic_front_distance = ultrasonic_front_distance
         self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
         self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
-		self.obstacle = obstacle
+        self.obstacle = obstacle
 
         return self.angle, self.throttle, self.mode, self.recording
 		
