@@ -16,7 +16,7 @@ class Obstacle():
         # initialize default action to go forward
         self.action = 'forward'
     
-    def compute_action():
+    def compute_action(self):
         if self.ultrasonic_front_distance <= 50:
             if self.ultrasonic_front_right_distance <= 50:
                 if self.ultrasonic_front_left_distance <= 50:
@@ -33,7 +33,7 @@ class Obstacle():
         self.ultrasonic_front_distance = ultrasonic_front_distance
         self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
         self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
-        self.action = compute_action()
+        self.action = self.compute_action()
 		
         return self.action
 		
