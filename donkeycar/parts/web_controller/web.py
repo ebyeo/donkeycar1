@@ -162,26 +162,16 @@ class LocalWebController(tornado.web.Application):
 class UltrasonicSensorAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.coroutine
-    def post(self):
-        print("inside ultrasonic sensor api")
-        interval = .1
-        distances = [self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance]
-        self.set_header("Content-Type", "application/json")
-        self.write(json.dumps(list(distances),default=json_util.default))
-
-    @tornado.web.asynchronous
-    @tornado.gen.coroutine
     def get(self):
-        interval = .1
-        distances = [self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance]
-        self.set_header("Content-Type", "application/json")
-        self.write(json.dumps(list(distances),default=json_util.default))
+        str = 'Front: {:.2f}, Front Left: {:.2f}, Front Right: {:.2f}, Obstacle: {}, Throttle: {:.2f}, Angle: {:.2f}'
+        str = str.format(self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance, self.application.obstacle, self.application.throttle, self.application.angle)
+        self.write(str)
 			
 class ObstacleAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.coroutine
     def get(self):
-        self.write(self.obstacle)
+        self.write(str(self.application.obstacle))
 
 class DriveAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
