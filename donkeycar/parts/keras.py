@@ -156,7 +156,8 @@ class KerasRearImageAndUltrasonicSensors(KerasPilot):
         
     def run(self, img_arr, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, obstacle):
         if obstacle == Constant.OBSTACLE_ACTION_STOP:
-            throttle_final = 0
+            angle_final = 0.0
+            throttle_final = 0.0
         elif obstacle == Constant.OBSTACLE_ACTION_RIGHT:
             angle_final = 1.0
             throttle_final = 0.5
