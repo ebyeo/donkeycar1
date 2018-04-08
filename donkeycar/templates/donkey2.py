@@ -28,6 +28,7 @@ def drive(cfg, model_path=None, use_joystick=False):
     from donkeycar.parts.camera import PiCamera
     from donkeycar.parts.ultrasonic import Ultrasonic
     from donkeycar.parts.actuator import PCA9685, PWMSteering, PWMThrottle
+    from donkeycar.parts.obstacle import Obstacle
     '''
     Construct a working robotic vehicle from many parts.
     Each part runs as a job in the Vehicle loop, calling either
