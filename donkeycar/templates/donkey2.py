@@ -4,6 +4,7 @@ Scripts to drive a donkey 2 car and train a model for it.
 
 Usage:
     manage.py (drive) [--model=<model>] [--js]
+    manage.py (drive_fuzzy) [--model=<model>] [--js]
     manage.py (train) [--tub=<tub1,tub2,..tubn>]  (--model=<model>) [--no_cache]
 
 Options:
@@ -88,9 +89,9 @@ def drive(cfg, model_path=None, use_joystick=False, use_fuzzy=False):
           outputs=['pilot/action'])
     
     #Run the pilot if the mode is not user.
-    if useFuzzy:
+    if use_fuzzy:
         kl = KerasFuzzyAndUltrasonicSensors()
-    else
+    else:
         kl = KerasUltrasonicSensors()
 		
     if model_path:
@@ -192,7 +193,10 @@ if __name__ == '__main__':
     cfg = dk.load_config()
     
     if args['drive']:
-        drive(cfg, model_path = args['--model'], use_joystick=args['--js'], args['fuzzy'])
+        drive(cfg, model_path = args['--model'], use_joystick=args['--js'], use_fuzzy = False)
+
+    elif args['drive_fuzzy']:
+        drive(cfg, model_path = args['--model'], use_joystick=args['--js'], use_fuzzy = True)
 
     elif args['train']:
         tub = args['--tub']
