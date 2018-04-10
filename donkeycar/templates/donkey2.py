@@ -18,13 +18,13 @@ import donkeycar as dk
 
 #import parts
 from donkeycar.parts.transform import Lambda
-from donkeycar.parts.keras import KerasFuzzyAndUltrasonicSensors
+from donkeycar.parts.keras import KerasFuzzyAndUltrasonicSensors, KerasUltrasonicSensors
 from donkeycar.parts.datastore import TubHandler, TubGroup
 from donkeycar.parts.controller import LocalWebController, JoystickController
 import numpy as np
 
 
-def drive(cfg, model_path=None, use_joystick=False):
+def drive(cfg, model_path=None, use_joystick=False, use_fuzzy=False):
     from donkeycar.parts.camera import PiCamera
     from donkeycar.parts.ultrasonic import Ultrasonic
     from donkeycar.parts.actuator import PCA9685, PWMSteering, PWMThrottle
@@ -88,7 +88,11 @@ def drive(cfg, model_path=None, use_joystick=False):
           outputs=['pilot/action'])
     
     #Run the pilot if the mode is not user.
-    kl = KerasFuzzyAndUltrasonicSensors()
+    if useFuzzy:
+        kl = KerasFuzzyAndUltrasonicSensors()
+    else
+        kl = KerasUltrasonicSensors()
+		
     if model_path:
         kl.load(model_path)
     
@@ -188,7 +192,7 @@ if __name__ == '__main__':
     cfg = dk.load_config()
     
     if args['drive']:
-        drive(cfg, model_path = args['--model'], use_joystick=args['--js'])
+        drive(cfg, model_path = args['--model'], use_joystick=args['--js'], args['fuzzy'])
 
     elif args['train']:
         tub = args['--tub']

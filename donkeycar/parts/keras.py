@@ -144,7 +144,6 @@ class KerasIMU(KerasPilot):
         throttle = outputs[1]
         return steering[0][0], throttle[0][0]
 
-
 class KerasFuzzyAndUltrasonicSensors(KerasPilot):
     def __init__(self, model=None, num_ultrasonic_inputs = 3, *args, **kwargs):
         super(KerasFuzzyAndUltrasonicSensors, self).__init__(*args, **kwargs)
@@ -178,7 +177,37 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
                 # evaluate each row by defuzzification
                 angle_fuzzy = self.fuzzy.defuzzify()
                 angle_final = angle_fuzzy
-                print('fuzzy input:', angle_nn, 'fuzzy output:', angle_fuzzy, 'left:', ultrasonic_front_left_distance, 'centre:', ultrasonic_front_distance, 'right:', ultrasonic_front_right_distance)
+
+                str = 'fuzzy input: {:.2f}, fuzzy output: {:.2f}, left: {:.2f}, centre: {:.2f}, right: {:.2f}, throttle: {:.2f}'
+                str = str.format(angle_nn, angle_fuzzy, ultrasonic_front_left_distance, ultrasonic_front_distance, ultrasonic_front_right_distance, throttle_nn)
+                print(str)		
+
+        return angle_final, throttle_final
+
+class KerasUltrasonicSensors(KerasPilot):
+    def __init__(self, model=None, num_ultrasonic_inputs = 3, *args, **kwargs):
+        super(KerasFuzzyAndUltrasonicSensors, self).__init__(*args, **kwargs)
+        self.num_ultrasonic_inputs = num_ultrasonic_inputs
+        if model:
+            self.model = model
+        else:
+            self.model = default_ultrasonicSensors(num_ultrasonic_inputs = num_ultrasonic_inputs)
+		
+    def run(self, img_arr, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, obstacle):
+        img_arr = img_arr.reshape((1,) + img_arr.shape)
+        ultrasonic_arr = np.array([ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance]).reshape(1, self.num_ultrasonic_inputs)
+        steering, throttle = self.model.predict([img_arr, ultrasonic_arr])
+        #print('throttle', throttle)
+        #angle_certainty = max(angle_binned[0])
+        angle_unbinned = dk.utils.linear_unbin(steering)
+        angle_nn = angle_unbinned
+        angle_final = angle_unbinned
+        throttle_nn = throttle[0][0]
+        throttle_final = throttle[0][0]
+
+        if obstacle == Constant.OBSTACLE_ACTION_STOP:
+            throttle_final = 0.0
+            print('stop due to obstacle that cannot be avoided')
 			
         return angle_final, throttle_final
 
