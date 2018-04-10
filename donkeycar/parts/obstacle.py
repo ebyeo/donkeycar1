@@ -22,7 +22,7 @@ class Obstacle():
         if self.ultrasonic_front_distance <= 50 and self.ultrasonic_front_distance >= 0:
             if self.ultrasonic_front_right_distance <= 50 and self.ultrasonic_front_right_distance >= 0:
                 if self.ultrasonic_front_left_distance <= 50 and self.ultrasonic_front_left_distance >= 0:
-				    print("STOP!!!!!")
+                    print("STOP!!!!!")
                     return Constant.OBSTACLE_ACTION_FORWARD
 					
         return Constant.OBSTACLE_ACTION_FORWARD

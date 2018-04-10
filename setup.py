@@ -44,6 +44,7 @@ setup(name='donkeycar',
                       'moviepy',
                       'pandas',
                       'pymongo',
+                      'scikit-fuzzy',
                      ],
 
     extras_require={

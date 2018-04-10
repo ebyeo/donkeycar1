@@ -18,7 +18,7 @@ import keras
 
 import donkeycar as dk
 import donkeycar.constant as Constant
-
+from donkeycar.parts.fuzzy import fuzzy
 
 class KerasPilot():
  
@@ -164,16 +164,21 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
         #print('throttle', throttle)
         #angle_certainty = max(angle_binned[0])
         angle_unbinned = dk.utils.linear_unbin(steering)
+        angle_nn = angle_unbinned
         angle_final = angle_unbinned
+        throttle_nn = throttle[0][0]
         throttle_final = throttle[0][0]
 
         if obstacle == Constant.OBSTACLE_ACTION_STOP:
             throttle_final = 0.0
+            print('stop due to obstacle that cannot be avoided')
         else:
-            if self.fuzzy.checkData(angle_final, ultrasonic_front_left_distance, ultrasonic_front_distance, ultrasonic_front_right_distance) == True:
+            if self.fuzzy.checkData(angle_nn, ultrasonic_front_left_distance, ultrasonic_front_distance, ultrasonic_front_right_distance) == True:
 
                 # evaluate each row by defuzzification
-                angle_final = self.fuzzy.defuzzify()
+                angle_fuzzy = self.fuzzy.defuzzify()
+                angle_final = angle_fuzzy
+                print('fuzzy input:', angle_nn, 'fuzzy output:', angle_fuzzy, 'left:' ultrasonic_front_left_distance, 'centre:', ultrasonic_front_distance, 'right:', ultrasonic_front_right_distance)
 			
         return angle_final, throttle_final
 
@@ -337,7 +342,7 @@ def default_imu(num_outputs, num_imu_inputs):
     
     return model
 	
-def default_UltrasonicSensors(num_ultrasonic_inputs):
+def default_ultrasonicSensors(num_ultrasonic_inputs):
 
     from keras.layers import Input, Dense
     from keras.models import Model
