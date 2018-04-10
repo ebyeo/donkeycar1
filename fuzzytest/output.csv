@@ -1,0 +1,244 @@
+No,OutputAngleInputAngle,OutputAngleLeftDistance,OutputAngleCenterDistance,OutputAngleRightDistance,OutputAngleRule,OutputAngle
+ 1,-0.8500,120.0000,120.0000,120.0000,far left & far & far & far => far left,-0.7958
+ 2,-0.8500,120.0000,120.0000,70.0000,far left & far & far & medium => far left,-0.7958
+ 3,-0.8500,120.0000,120.0000,20.0000,far left & far & far & near => far left,-0.7958
+ 4,-0.8500,120.0000,70.0000,120.0000,far left & far & medium & far => far left,-0.7958
+ 5,-0.8500,120.0000,70.0000,70.0000,far left & far & medium & medium => far left,-0.7958
+ 6,-0.8500,120.0000,70.0000,20.0000,far left & far & medium & near => far left,-0.7958
+ 7,-0.8500,120.0000,20.0000,120.0000,far left & far & near & far => far left,-0.7958
+ 8,-0.8500,120.0000,20.0000,70.0000,far left & far & near & medium => far left,-0.7958
+ 9,-0.8500,120.0000,20.0000,20.0000,far left & far & near & near => far left,-0.7958
+10,-0.8500,70.0000,120.0000,120.0000,far left & medium & far & far => center,-0.0000
+11,-0.8500,70.0000,120.0000,70.0000,far left & medium & far & medium => center,-0.0000
+12,-0.8500,70.0000,120.0000,20.0000,far left & medium & far & near => center,-0.0000
+13,-0.8500,70.0000,70.0000,120.0000,far left & medium & medium & far => mid right,0.4000
+14,-0.8500,70.0000,70.0000,70.0000,far left & medium & medium & medium => far left,-0.7958
+15,-0.8500,70.0000,70.0000,20.0000,far left & medium & medium & near => far left,-0.7958
+16,-0.8500,70.0000,20.0000,120.0000,far left & medium & near & far => far right,0.7444
+17,-0.8500,70.0000,20.0000,70.0000,far left & medium & near & medium => far left,-0.7958
+18,-0.8500,20.0000,20.0000,20.0000,far left & medium & near & near => far left,-0.7958
+19,-0.8500,20.0000,120.0000,120.0000,far left & near & far & far => center,-0.0000
+20,-0.8500,20.0000,120.0000,70.0000,far left & near & far & medium => center,-0.0000
+21,-0.8500,20.0000,120.0000,20.0000,far left & near & far & near => center,-0.0000
+22,-0.8500,20.0000,70.0000,120.0000,far left & near & medium & far => mid right,0.4000
+23,-0.8500,20.0000,70.0000,70.0000,far left & near & medium & medium => center,-0.0000
+24,-0.8500,20.0000,70.0000,20.0000,far left & near & medium & near => center,-0.0000
+25,-0.8500,20.0000,20.0000,120.0000,far left & near & near & far => far right,0.7444
+26,-0.8500,20.0000,20.0000,70.0000,far left & near & near & medium => far right,0.7444
+27,-0.8500,20.0000,20.0000,20.0000,far left & near & near & near => far left,-0.7958
+28,-0.4000,120.0000,120.0000,120.0000,mid left & far & far & far => mid left,-0.4000
+29,-0.4000,120.0000,120.0000,70.0000,mid left & far & far & medium => mid left,-0.4000
+30,-0.4000,120.0000,120.0000,20.0000,mid left & far & far & near => mid left,-0.4000
+31,-0.4000,120.0000,70.0000,120.0000,mid left & far & medium & far => mid left,-0.4000
+32,-0.4000,120.0000,70.0000,70.0000,mid left & far & medium & medium => mid left,-0.4000
+33,-0.4000,120.0000,70.0000,20.0000,mid left & far & medium & near => mid left,-0.4000
+34,-0.4000,120.0000,20.0000,120.0000,mid left & far & near & far => mid left,-0.4000
+35,-0.4000,120.0000,20.0000,70.0000,mid left & far & near & medium => mid left,-0.4000
+36,-0.4000,120.0000,20.0000,20.0000,mid left & far & near & near => mid left,-0.4000
+37,-0.4000,70.0000,120.0000,120.0000,mid left & medium & far & far => center,-0.0000
+38,-0.4000,70.0000,120.0000,70.0000,mid left & medium & far & medium => center,-0.0000
+39,-0.4000,70.0000,120.0000,20.0000,mid left & medium & far & near => center,-0.0000
+40,-0.4000,70.0000,70.0000,120.0000,mid left & medium & medium & far => mid right,0.4000
+41,-0.4000,70.0000,70.0000,70.0000,mid left & medium & medium & medium => mid left,-0.4000
+42,-0.4000,70.0000,70.0000,20.0000,mid left & medium & medium & near => mid left,-0.4000
+43,-0.4000,70.0000,20.0000,120.0000,mid left & medium & near & far => mid right,0.4000
+44,-0.4000,70.0000,20.0000,70.0000,mid left & medium & near & medium => mid left,-0.4000
+45,-0.4000,20.0000,20.0000,20.0000,mid left & medium & near & near => mid left,-0.4000
+46,-0.4000,20.0000,120.0000,120.0000,mid left & near & far & far => center,-0.0000
+47,-0.4000,20.0000,120.0000,70.0000,mid left & near & far & medium => center,-0.0000
+48,-0.4000,20.0000,120.0000,20.0000,mid left & near & far & near => center,-0.0000
+49,-0.4000,20.0000,70.0000,120.0000,mid left & near & medium & far => mid right,0.4000
+50,-0.4000,20.0000,70.0000,70.0000,mid left & near & medium & medium => center,-0.0000
+51,-0.4000,20.0000,70.0000,20.0000,mid left & near & medium & near => center,-0.0000
+52,-0.4000,20.0000,20.0000,120.0000,mid left & near & near & far => far right,0.7444
+53,-0.4000,20.0000,20.0000,70.0000,mid left & near & near & medium => far right,0.7444
+54,-0.4000,20.0000,20.0000,20.0000,mid left & near & near & near => mid left,-0.4000
+55,0.0000,120.0000,120.0000,120.0000,center & far & far & far => center,-0.0000
+56,0.0000,120.0000,120.0000,70.0000,center & far & far & medium => center,-0.0000
+57,0.0000,120.0000,120.0000,20.0000,center & far & far & near => center,-0.0000
+58,0.0000,120.0000,70.0000,120.0000,center & far & medium & far => mid right,0.4000
+59,0.0000,120.0000,70.0000,70.0000,center & far & medium & medium => mid left,-0.4000
+60,0.0000,120.0000,70.0000,20.0000,center & far & medium & near => mid left,-0.4000
+61,0.0000,120.0000,20.0000,120.0000,center & far & near & far => far right,0.7444
+62,0.0000,120.0000,20.0000,70.0000,center & far & near & medium => far left,-0.7958
+63,0.0000,120.0000,20.0000,20.0000,center & far & near & near => far left,-0.7958
+64,0.0000,70.0000,120.0000,120.0000,center & medium & far & far => center,-0.0000
+65,0.0000,70.0000,120.0000,70.0000,center & medium & far & medium => center,-0.0000
+66,0.0000,70.0000,120.0000,20.0000,center & medium & far & near => center,-0.0000
+67,0.0000,70.0000,70.0000,120.0000,center & medium & medium & far => mid right,0.4000
+68,0.0000,70.0000,70.0000,70.0000,center & medium & medium & medium => mid right,0.4000
+69,0.0000,70.0000,70.0000,20.0000,center & medium & medium & near => mid left,-0.4000
+70,0.0000,70.0000,20.0000,120.0000,center & medium & near & far => far right,0.7444
+71,0.0000,70.0000,20.0000,70.0000,center & medium & near & medium => far right,0.7444
+72,0.0000,20.0000,20.0000,20.0000,center & medium & near & near => far left,-0.0000
+73,0.0000,20.0000,120.0000,120.0000,center & near & far & far => center,-0.0000
+74,0.0000,20.0000,120.0000,70.0000,center & near & far & medium => center,-0.0000
+75,0.0000,20.0000,120.0000,20.0000,center & near & far & near => center,-0.0000
+76,0.0000,20.0000,70.0000,120.0000,center & near & medium & far => mid right,0.4000
+77,0.0000,20.0000,70.0000,70.0000,center & near & medium & medium => center,-0.0000
+78,0.0000,20.0000,70.0000,20.0000,center & near & medium & near => center,-0.0000
+79,0.0000,20.0000,20.0000,120.0000,center & near & near & far => far right,0.7444
+80,0.0000,20.0000,20.0000,70.0000,center & near & near & medium => far right,0.7444
+81,0.0000,20.0000,20.0000,20.0000,center & near & near & near => center,-0.0000
+82,0.4000,120.0000,120.0000,120.0000,mid right & far & far & far => mid right,0.4000
+83,0.4000,120.0000,120.0000,70.0000,mid right & far & far & medium => center,-0.0000
+84,0.4000,120.0000,120.0000,20.0000,mid right & far & far & near => center,-0.0000
+85,0.4000,120.0000,70.0000,120.0000,mid right & far & medium & far => mid right,0.4000
+86,0.4000,120.0000,70.0000,70.0000,mid right & far & medium & medium => mid left,-0.4000
+87,0.4000,120.0000,70.0000,20.0000,mid right & far & medium & near => mid left,-0.4000
+88,0.4000,120.0000,20.0000,120.0000,mid right & far & near & far => mid right,0.4000
+89,0.4000,120.0000,20.0000,70.0000,mid right & far & near & medium => mid left,-0.4000
+90,0.4000,120.0000,20.0000,20.0000,mid right & far & near & near => far left,-0.7958
+91,0.4000,70.0000,120.0000,120.0000,mid right & medium & far & far => mid right,0.4000
+92,0.4000,70.0000,120.0000,70.0000,mid right & medium & far & medium => center,-0.0000
+93,0.4000,70.0000,120.0000,20.0000,mid right & medium & far & near => center,-0.0000
+94,0.4000,70.0000,70.0000,120.0000,mid right & medium & medium & far => mid right,0.4000
+95,0.4000,70.0000,70.0000,70.0000,mid right & medium & medium & medium => mid right,0.4000
+96,0.4000,70.0000,70.0000,20.0000,mid right & medium & medium & near => center,-0.0000
+97,0.4000,70.0000,20.0000,120.0000,mid right & medium & near & far => mid right,0.4000
+98,0.4000,70.0000,20.0000,70.0000,mid right & medium & near & medium => mid right,0.4000
+99,0.4000,20.0000,20.0000,20.0000,mid right & medium & near & near => far left,0.4000
+100,0.4000,20.0000,120.0000,120.0000,mid right & near & far & far => mid right,0.4000
+101,0.4000,20.0000,120.0000,70.0000,mid right & near & far & medium => center,-0.0000
+102,0.4000,20.0000,120.0000,20.0000,mid right & near & far & near => center,-0.0000
+103,0.4000,20.0000,70.0000,120.0000,mid right & near & medium & far => mid right,0.4000
+104,0.4000,20.0000,70.0000,70.0000,mid right & near & medium & medium => mid right,0.4000
+105,0.4000,20.0000,70.0000,20.0000,mid right & near & medium & near => center,-0.0000
+106,0.4000,20.0000,20.0000,120.0000,mid right & near & near & far => mid right,0.4000
+107,0.4000,20.0000,20.0000,70.0000,mid right & near & near & medium => mid right,0.4000
+108,0.4000,20.0000,20.0000,20.0000,mid right & near & near & near => mid right,0.4000
+109,0.8500,120.0000,120.0000,120.0000,far right & far & far & far => far right,0.7444
+110,0.8500,120.0000,120.0000,70.0000,far right & far & far & medium => center,-0.0000
+111,0.8500,120.0000,120.0000,20.0000,far right & far & far & near => center,-0.0000
+112,0.8500,120.0000,70.0000,120.0000,far right & far & medium & far => far right,0.7444
+113,0.8500,120.0000,70.0000,70.0000,far right & far & medium & medium => mid left,-0.4000
+114,0.8500,120.0000,70.0000,20.0000,far right & far & medium & near => mid left,-0.4000
+115,0.8500,120.0000,20.0000,120.0000,far right & far & near & far => far right,0.7444
+116,0.8500,120.0000,20.0000,70.0000,far right & far & near & medium => far left,-0.7958
+117,0.8500,120.0000,20.0000,20.0000,far right & far & near & near => far left,-0.7958
+118,0.8500,70.0000,120.0000,120.0000,far right & medium & far & far => far right,0.7444
+119,0.8500,70.0000,120.0000,70.0000,far right & medium & far & medium => center,-0.0000
+120,0.8500,70.0000,120.0000,20.0000,far right & medium & far & near => center,-0.0000
+121,0.8500,70.0000,70.0000,120.0000,far right & medium & medium & far => far right,0.7444
+122,0.8500,70.0000,70.0000,70.0000,far right & medium & medium & medium => far right,0.7444
+123,0.8500,70.0000,70.0000,20.0000,far right & medium & medium & near => center,-0.0000
+124,0.8500,70.0000,20.0000,120.0000,far right & medium & near & far => far right,0.7444
+125,0.8500,70.0000,20.0000,70.0000,far right & medium & near & medium => far right,0.7444
+126,0.8500,20.0000,20.0000,20.0000,far right & medium & near & near => far left,0.7444
+127,0.8500,20.0000,120.0000,120.0000,far right & near & far & far => far right,0.7444
+128,0.8500,20.0000,120.0000,70.0000,far right & near & far & medium => center,-0.0000
+129,0.8500,20.0000,120.0000,20.0000,far right & near & far & near => center,-0.0000
+130,0.8500,20.0000,70.0000,120.0000,far right & near & medium & far => far right,0.7444
+131,0.8500,20.0000,70.0000,70.0000,far right & near & medium & medium => far right,0.7444
+132,0.8500,20.0000,70.0000,20.0000,far right & near & medium & near => center,-0.0000
+133,0.8500,20.0000,20.0000,120.0000,far right & near & near & far => far right,0.7444
+134,0.8500,20.0000,20.0000,70.0000,far right & near & near & medium => far right,0.7444
+135,0.8500,20.0000,20.0000,20.0000,far right & near & near & near => far right,0.7444
+136,-0.6000,120.0000,120.0000,120.0000,fuzzy between far-left & mid-left,-0.5745
+137,-0.6000,120.0000,120.0000,70.0000,fuzzy between far-left & mid-left,-0.5745
+138,-0.6000,120.0000,120.0000,20.0000,fuzzy between far-left & mid-left,-0.5745
+139,-0.6000,120.0000,70.0000,120.0000,fuzzy between far-left & mid-left,-0.5745
+140,-0.6000,120.0000,70.0000,70.0000,fuzzy between far-left & mid-left,-0.5745
+141,-0.6000,120.0000,70.0000,20.0000,fuzzy between far-left & mid-left,-0.5745
+142,-0.6000,120.0000,20.0000,120.0000,fuzzy between far-left & mid-left,-0.5745
+143,-0.6000,120.0000,20.0000,70.0000,fuzzy between far-left & mid-left,-0.5745
+144,-0.6000,120.0000,20.0000,20.0000,fuzzy between far-left & mid-left,-0.5745
+145,-0.6000,70.0000,120.0000,120.0000,fuzzy between far-left & mid-left,0.0000
+146,-0.6000,70.0000,120.0000,70.0000,fuzzy between far-left & mid-left,0.0000
+147,-0.6000,70.0000,120.0000,20.0000,fuzzy between far-left & mid-left,0.0000
+148,-0.6000,70.0000,70.0000,120.0000,fuzzy between far-left & mid-left,0.4000
+149,-0.6000,70.0000,70.0000,70.0000,fuzzy between far-left & mid-left,-0.5745
+150,-0.6000,70.0000,70.0000,20.0000,fuzzy between far-left & mid-left,-0.5745
+151,-0.6000,70.0000,20.0000,120.0000,fuzzy between far-left & mid-left,0.5244
+152,-0.6000,70.0000,20.0000,70.0000,fuzzy between far-left & mid-left,-0.5745
+153,-0.6000,20.0000,20.0000,20.0000,fuzzy between far-left & mid-left,-0.5745
+154,-0.6000,20.0000,120.0000,120.0000,fuzzy between far-left & mid-left,0.0000
+155,-0.6000,20.0000,120.0000,70.0000,fuzzy between far-left & mid-left,0.0000
+156,-0.6000,20.0000,120.0000,20.0000,fuzzy between far-left & mid-left,0.0000
+157,-0.6000,20.0000,70.0000,120.0000,fuzzy between far-left & mid-left,0.4000
+158,-0.6000,20.0000,70.0000,70.0000,fuzzy between far-left & mid-left,0.0000
+159,-0.6000,20.0000,70.0000,20.0000,fuzzy between far-left & mid-left,0.0000
+160,-0.6000,20.0000,20.0000,120.0000,fuzzy between far-left & mid-left,0.7238
+161,-0.6000,20.0000,20.0000,70.0000,fuzzy between far-left & mid-left,0.7238
+162,-0.6000,20.0000,20.0000,20.0000,fuzzy between far-left & mid-left,-0.5745
+163,-0.2000,120.0000,120.0000,120.0000,fuzzy between mid-left & center,-0.2000
+164,-0.2000,120.0000,120.0000,70.0000,fuzzy between mid-left & center,-0.2000
+165,-0.2000,120.0000,120.0000,20.0000,fuzzy between mid-left & center,-0.2000
+166,-0.2000,120.0000,70.0000,120.0000,fuzzy between mid-left & center,0.0000
+167,-0.2000,120.0000,70.0000,70.0000,fuzzy between mid-left & center,-0.4000
+168,-0.2000,120.0000,70.0000,20.0000,fuzzy between mid-left & center,-0.4000
+169,-0.2000,120.0000,20.0000,120.0000,fuzzy between mid-left & center,0.0627
+170,-0.2000,120.0000,20.0000,70.0000,fuzzy between mid-left & center,-0.5745
+171,-0.2000,120.0000,20.0000,20.0000,fuzzy between mid-left & center,-0.5745
+172,-0.2000,70.0000,120.0000,120.0000,fuzzy between mid-left & center,0.0000
+173,-0.2000,70.0000,120.0000,70.0000,fuzzy between mid-left & center,0.0000
+174,-0.2000,70.0000,120.0000,20.0000,fuzzy between mid-left & center,0.0000
+175,-0.2000,70.0000,70.0000,120.0000,fuzzy between mid-left & center,0.4000
+176,-0.2000,70.0000,70.0000,70.0000,fuzzy between mid-left & center,0.0000
+177,-0.2000,70.0000,70.0000,20.0000,fuzzy between mid-left & center,-0.4000
+178,-0.2000,70.0000,20.0000,120.0000,fuzzy between mid-left & center,0.5244
+179,-0.2000,70.0000,20.0000,70.0000,fuzzy between mid-left & center,0.0627
+180,-0.2000,20.0000,20.0000,20.0000,fuzzy between mid-left & center,-0.2000
+181,-0.2000,20.0000,120.0000,120.0000,fuzzy between mid-left & center,0.0000
+182,-0.2000,20.0000,120.0000,70.0000,fuzzy between mid-left & center,0.0000
+183,-0.2000,20.0000,120.0000,20.0000,fuzzy between mid-left & center,0.0000
+184,-0.2000,20.0000,70.0000,120.0000,fuzzy between mid-left & center,0.4000
+185,-0.2000,20.0000,70.0000,70.0000,fuzzy between mid-left & center,0.0000
+186,-0.2000,20.0000,70.0000,20.0000,fuzzy between mid-left & center,0.0000
+187,-0.2000,20.0000,20.0000,120.0000,fuzzy between mid-left & center,0.7238
+188,-0.2000,20.0000,20.0000,70.0000,fuzzy between mid-left & center,0.7238
+189,-0.2000,20.0000,20.0000,20.0000,fuzzy between mid-left & center,-0.2000
+190,0.2000,120.0000,120.0000,120.0000,fuzzy between center & mid-right,0.2000
+191,0.2000,120.0000,120.0000,70.0000,fuzzy between center & mid-right,0.0000
+192,0.2000,120.0000,120.0000,20.0000,fuzzy between center & mid-right,0.0000
+193,0.2000,120.0000,70.0000,120.0000,fuzzy between center & mid-right,0.4000
+194,0.2000,120.0000,70.0000,70.0000,fuzzy between center & mid-right,-0.4000
+195,0.2000,120.0000,70.0000,20.0000,fuzzy between center & mid-right,-0.4000
+196,0.2000,120.0000,20.0000,120.0000,fuzzy between center & mid-right,0.5244
+197,0.2000,120.0000,20.0000,70.0000,fuzzy between center & mid-right,-0.5745
+198,0.2000,120.0000,20.0000,20.0000,fuzzy between center & mid-right,-0.7741
+199,0.2000,70.0000,120.0000,120.0000,fuzzy between center & mid-right,0.2000
+200,0.2000,70.0000,120.0000,70.0000,fuzzy between center & mid-right,0.0000
+201,0.2000,70.0000,120.0000,20.0000,fuzzy between center & mid-right,0.0000
+202,0.2000,70.0000,70.0000,120.0000,fuzzy between center & mid-right,0.4000
+203,0.2000,70.0000,70.0000,70.0000,fuzzy between center & mid-right,0.4000
+204,0.2000,70.0000,70.0000,20.0000,fuzzy between center & mid-right,-0.2000
+205,0.2000,70.0000,20.0000,120.0000,fuzzy between center & mid-right,0.5244
+206,0.2000,70.0000,20.0000,70.0000,fuzzy between center & mid-right,0.5244
+207,0.2000,20.0000,20.0000,20.0000,fuzzy between center & mid-right,0.2000
+208,0.2000,20.0000,120.0000,120.0000,fuzzy between center & mid-right,0.2000
+209,0.2000,20.0000,120.0000,70.0000,fuzzy between center & mid-right,0.0000
+210,0.2000,20.0000,120.0000,20.0000,fuzzy between center & mid-right,0.0000
+211,0.2000,20.0000,70.0000,120.0000,fuzzy between center & mid-right,0.4000
+212,0.2000,20.0000,70.0000,70.0000,fuzzy between center & mid-right,0.2000
+213,0.2000,20.0000,70.0000,20.0000,fuzzy between center & mid-right,0.0000
+214,0.2000,20.0000,20.0000,120.0000,fuzzy between center & mid-right,0.5244
+215,0.2000,20.0000,20.0000,70.0000,fuzzy between center & mid-right,0.5244
+216,0.2000,20.0000,20.0000,20.0000,fuzzy between center & mid-right,0.2000
+217,0.6000,120.0000,120.0000,120.0000,fuzzy between mid-right & far-right,0.5244
+218,0.6000,120.0000,120.0000,70.0000,fuzzy between mid-right & far-right,0.0000
+219,0.6000,120.0000,120.0000,20.0000,fuzzy between mid-right & far-right,0.0000
+220,0.6000,120.0000,70.0000,120.0000,fuzzy between mid-right & far-right,0.5244
+221,0.6000,120.0000,70.0000,70.0000,fuzzy between mid-right & far-right,-0.4000
+222,0.6000,120.0000,70.0000,20.0000,fuzzy between mid-right & far-right,-0.4000
+223,0.6000,120.0000,20.0000,120.0000,fuzzy between mid-right & far-right,0.5244
+224,0.6000,120.0000,20.0000,70.0000,fuzzy between mid-right & far-right,-0.5745
+225,0.6000,120.0000,20.0000,20.0000,fuzzy between mid-right & far-right,-0.7741
+226,0.6000,70.0000,120.0000,120.0000,fuzzy between mid-right & far-right,0.5244
+227,0.6000,70.0000,120.0000,70.0000,fuzzy between mid-right & far-right,0.0000
+228,0.6000,70.0000,120.0000,20.0000,fuzzy between mid-right & far-right,0.0000
+229,0.6000,70.0000,70.0000,120.0000,fuzzy between mid-right & far-right,0.5244
+230,0.6000,70.0000,70.0000,70.0000,fuzzy between mid-right & far-right,0.5244
+231,0.6000,70.0000,70.0000,20.0000,fuzzy between mid-right & far-right,0.0000
+232,0.6000,70.0000,20.0000,120.0000,fuzzy between mid-right & far-right,0.5244
+233,0.6000,70.0000,20.0000,70.0000,fuzzy between mid-right & far-right,0.5244
+234,0.6000,20.0000,20.0000,20.0000,fuzzy between mid-right & far-right,0.5244
+235,0.6000,20.0000,120.0000,120.0000,fuzzy between mid-right & far-right,0.5244
+236,0.6000,20.0000,120.0000,70.0000,fuzzy between mid-right & far-right,0.0000
+237,0.6000,20.0000,120.0000,20.0000,fuzzy between mid-right & far-right,0.0000
+238,0.6000,20.0000,70.0000,120.0000,fuzzy between mid-right & far-right,0.5244
+239,0.6000,20.0000,70.0000,70.0000,fuzzy between mid-right & far-right,0.5244
+240,0.6000,20.0000,70.0000,20.0000,fuzzy between mid-right & far-right,0.0000
+241,0.6000,20.0000,20.0000,120.0000,fuzzy between mid-right & far-right,0.5244
+242,0.6000,20.0000,20.0000,70.0000,fuzzy between mid-right & far-right,0.5244
+243,0.6000,20.0000,20.0000,20.0000,fuzzy between mid-right & far-right,0.5244

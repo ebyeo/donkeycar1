@@ -1,0 +1,18 @@
+../throttle.sh 1 80 0.75 601
+../throttle.sh 81 110 1.0 681
+../throttle.sh 111 210 0.75 711
+../throttle.sh 211 280 1.0 811
+../throttle.sh 281 550 0.75 881
+../throttle.sh 551 570 1.0 1151
+../throttle.sh 571 600 0.75 1171
+
+../angle.sh 1 80 0.5 601
+../angle.sh 81 110 0 681
+../angle.sh 111 210 0.5 711
+../angle.sh 211 280 0 811
+../angle.sh 281 390 0.5 881
+../angle.sh 391 400 0 991
+../angle.sh 401 460 -0.5 1001
+../angle.sh 461 550 0.5 1061
+../angle.sh 551 570 0 1151
+../angle.sh 571 600 0.5 1171
