@@ -178,7 +178,7 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
                 # evaluate each row by defuzzification
                 angle_fuzzy = self.fuzzy.defuzzify()
                 angle_final = angle_fuzzy
-                print('fuzzy input:', angle_nn, 'fuzzy output:', angle_fuzzy, 'left:' ultrasonic_front_left_distance, 'centre:', ultrasonic_front_distance, 'right:', ultrasonic_front_right_distance)
+                print('fuzzy input:', angle_nn, 'fuzzy output:', angle_fuzzy, 'left:', ultrasonic_front_left_distance, 'centre:', ultrasonic_front_distance, 'right:', ultrasonic_front_right_distance)
 			
         return angle_final, throttle_final
 
