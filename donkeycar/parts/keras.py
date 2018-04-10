@@ -145,37 +145,37 @@ class KerasIMU(KerasPilot):
         return steering[0][0], throttle[0][0]
 
 
-class KerasRearImageAndUltrasonicSensors(KerasPilot):
+class KerasFuzzyAndUltrasonicSensors(KerasPilot):
     def __init__(self, model=None, num_ultrasonic_inputs = 3, *args, **kwargs):
-        super(KerasRearImageAndUltrasonicSensors, self).__init__(*args, **kwargs)
+        super(KerasFuzzyAndUltrasonicSensors, self).__init__(*args, **kwargs)
         self.num_ultrasonic_inputs = num_ultrasonic_inputs
         if model:
             self.model = model
         else:
-            self.model = default_rearImageAndUltrasonicSensors(num_ultrasonic_inputs = num_ultrasonic_inputs)
-        
+            self.model = default_ultrasonicSensors(num_ultrasonic_inputs = num_ultrasonic_inputs)
+
+        # set the inference engine
+        self.fuzzy = fuzzy()
+		
     def run(self, img_arr, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, obstacle):
+        img_arr = img_arr.reshape((1,) + img_arr.shape)
+        ultrasonic_arr = np.array([ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance]).reshape(1, self.num_ultrasonic_inputs)
+        steering, throttle = self.model.predict([img_arr, ultrasonic_arr])
+        #print('throttle', throttle)
+        #angle_certainty = max(angle_binned[0])
+        angle_unbinned = dk.utils.linear_unbin(steering)
+        angle_final = angle_unbinned
+        throttle_final = throttle[0][0]
+
         if obstacle == Constant.OBSTACLE_ACTION_STOP:
-            angle_final = 0.0
             throttle_final = 0.0
-        elif obstacle == Constant.OBSTACLE_ACTION_RIGHT:
-            angle_final = 1.0
-            throttle_final = 0.5
-        elif obstacle == Constant.OBSTACLE_ACTION_LEFT:
-            angle_final = -1.0
-            throttle_final = 0.5
         else:
-            img_arr = img_arr.reshape((1,) + img_arr.shape)
-            ultrasonic_arr = np.array([ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance]).reshape(1, self.num_ultrasonic_inputs)
-            steering, throttle = self.model.predict([img_arr, ultrasonic_arr])
-            #print('throttle', throttle)
-            #angle_certainty = max(angle_binned[0])
-            angle_unbinned = dk.utils.linear_unbin(steering)
-            angle_final = angle_unbinned
-            throttle_final = throttle[0][0]
+            if self.fuzzy.checkData(angle_final, ultrasonic_front_left_distance, ultrasonic_front_distance, ultrasonic_front_right_distance) == True:
+
+                # evaluate each row by defuzzification
+                angle_final = self.fuzzy.defuzzify()
 			
         return angle_final, throttle_final
-    
 
 def default_categorical():
     from keras.layers import Input, Dense, merge
@@ -337,7 +337,7 @@ def default_imu(num_outputs, num_imu_inputs):
     
     return model
 	
-def default_rearImageAndUltrasonicSensors(num_ultrasonic_inputs):
+def default_UltrasonicSensors(num_ultrasonic_inputs):
 
     from keras.layers import Input, Dense
     from keras.models import Model

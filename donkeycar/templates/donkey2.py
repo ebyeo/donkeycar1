@@ -18,7 +18,7 @@ import donkeycar as dk
 
 #import parts
 from donkeycar.parts.transform import Lambda
-from donkeycar.parts.keras import KerasRearImageAndUltrasonicSensors
+from donkeycar.parts.keras import KerasFuzzyAndUltrasonicSensors
 from donkeycar.parts.datastore import TubHandler, TubGroup
 from donkeycar.parts.controller import LocalWebController, JoystickController
 import numpy as np
@@ -88,7 +88,7 @@ def drive(cfg, model_path=None, use_joystick=False):
           outputs=['pilot/action'])
     
     #Run the pilot if the mode is not user.
-    kl = KerasRearImageAndUltrasonicSensors()
+    kl = KerasFuzzyAndUltrasonicSensors()
     if model_path:
         kl.load(model_path)
     
@@ -159,7 +159,7 @@ def train(cfg, tub_names, model_name):
         record['ultrasonic_array'] = np.array([ record['ultrasonic_front/distance'], record['ultrasonic_front_left/distance'], record['ultrasonic_front_right/distance'] ])
         return record
 
-    kl = KerasRearImageAndUltrasonicSensors()
+    kl = KerasFuzzyAndUltrasonicSensors()
     print('tub_names', tub_names)
     if not tub_names:
         tub_names = os.path.join(cfg.DATA_PATH, '*')

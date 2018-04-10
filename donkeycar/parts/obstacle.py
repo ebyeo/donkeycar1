@@ -19,6 +19,12 @@ class Obstacle():
         self.action = Constant.OBSTACLE_ACTION_FORWARD
     
     def compute_action(self):
+        if self.ultrasonic_front_distance <= 50 and self.ultrasonic_front_distance >= 0:
+            if self.ultrasonic_front_right_distance <= 50 and self.ultrasonic_front_right_distance >= 0:
+                if self.ultrasonic_front_left_distance <= 50 and self.ultrasonic_front_left_distance >= 0:
+				    print("STOP!!!!!")
+                    return Constant.OBSTACLE_ACTION_FORWARD
+					
         return Constant.OBSTACLE_ACTION_FORWARD
 
     def run(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None):
