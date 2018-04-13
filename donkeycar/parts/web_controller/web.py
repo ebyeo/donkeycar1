@@ -184,12 +184,12 @@ class UltrasonicSensorAPI(tornado.web.RequestHandler):
         if self.application.pilot_angle is None:
             data['angle'] = 0.0
         else:
-            data['angle'] = self.application.pilot_angle
+            data['angle'] = self.application.pilot_angle * 1.0
 
         if self.application.pilot_throttle is None:
             data['throttle'] = 0.0
         else:
-            data['throttle'] = self.application.pilot_throttle
+            data['throttle'] = self.application.pilot_throttle * 1.0
 
         print('****************', data)
         self.set_header('Content-Type', 'application/json')
