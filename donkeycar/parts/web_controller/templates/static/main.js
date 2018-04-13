@@ -134,9 +134,17 @@ var driveHandler = new function() {
     var timeout = 300 //milliseconds
     function ultrasonicSensorRequest() {
         $.ajax({
-            url: ultrasonicSensorURL
-        }).done(function(data) {
-            state.distances = data;
+            url: ultrasonicSensorURL,
+            data: { get_param: 'value' }, 
+            dataType:'json'
+		}).done(function(data) {
+            var obj = JSON.parse = data;
+
+			state.tele.pilot.angle = obh.angle
+			state.tele.pilot.throttle = obh.throttle
+
+			state.distances = "Left: " + obj.front_left + " Center: " + obj.front + " Right: " + obj.front_right;
+			
             $('#distances').text(state.distances);
         });
     }
@@ -182,11 +190,22 @@ var driveHandler = new function() {
       $('#mode_select').val(state.driveMode);
       $('#distances').text(state.distances);
 
-      var throttlePercent = Math.round(Math.abs(state.tele.user.throttle) * 100) + '%';
-      var steeringPercent = Math.round(Math.abs(state.tele.user.angle) * 100) + '%';
-      var throttleRounded = state.tele.user.throttle.toFixed(2)
-      var steeringRounded = state.tele.user.angle.toFixed(2)
-
+	  var throttlePercent = 0;
+	  var steeringPercent = 0;
+	  var throttleRounded = 0;
+	  var steeringRounded = 0;
+	  if (state.driveMode == 'auto' {
+		  throttlePercent = Math.round(Math.abs(state.tele.pilot.throttle) * 100) + '%';
+		  steeringPercent = Math.round(Math.abs(state.tele.pilot.angle) * 100) + '%';
+		  throttleRounded = state.tele.pilot.throttle.toFixed(2);
+		  steeringRounded = state.tele.pilot.angle.toFixed(2);
+	  } else { 
+		  throttlePercent = Math.round(Math.abs(state.tele.user.throttle) * 100) + '%';
+		  steeringPercent = Math.round(Math.abs(state.tele.user.angle) * 100) + '%';
+		  throttleRounded = state.tele.user.throttle.toFixed(2);
+		  steeringRounded = state.tele.user.angle.toFixed(2);
+	  }
+	  
       $('#throttle_label').html(throttleRounded);
       $('#steering_label').html(steeringRounded);
 
