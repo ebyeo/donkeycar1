@@ -59,6 +59,7 @@ class Ultrasonic():
     def update(self):
         while self.on:
             self.distance = self.poll_distance()
+            print('ultrasonic', self.name, ':', self.distance)
             time.sleep(self.poll_delay)
             
     def run_threaded(self):
@@ -78,6 +79,8 @@ class Ultrasonic():
 
         if GPIO.input(self.gpio_echo) == 1:
             return ULTRASONIC_DEFAULT_DISTANCE
+
+        distance = 0
 
         # set Trigger to HIGH
         GPIO.output(self.gpio_trigger, True)

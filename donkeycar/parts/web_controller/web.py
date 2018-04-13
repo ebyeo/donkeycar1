@@ -122,7 +122,6 @@ class LocalWebController(tornado.web.Application):
             (r"/", tornado.web.RedirectHandler, dict(url="/drive")),
             (r"/drive", DriveAPI),
             (r"/ultrasonic", UltrasonicSensorAPI),
-            (r"/obstacle", ObstacleAPI),
             (r"/video_front",VideoAPI),
             (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": self.static_file_path}),
             ]
@@ -144,19 +143,19 @@ class LocalWebController(tornado.web.Application):
         self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
         self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
         self.obstacle = obstacle
-		self.pilot_angle = pilot_angle
-		self.pilot_throttle = pilot_throttle
+        self.pilot_angle = pilot_angle
+        self.pilot_throttle = pilot_throttle
 		
         return self.angle, self.throttle, self.mode, self.recording
         
-    def run(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None, obstacle=None, pilot_angle = None pilot_throttle = None):
+    def run(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None, obstacle=None, pilot_angle = None, pilot_throttle = None):
         self.img_arr = img_arr
         self.ultrasonic_front_distance = ultrasonic_front_distance
         self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
         self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
         self.obstacle = obstacle
-		self.pilot_angle = pilot_angle
-		self.pilot_throttle = pilot_throttle
+        self.pilot_angle = pilot_angle
+        self.pilot_throttle = pilot_throttle
 
         return self.angle, self.throttle, self.mode, self.recording
 		
@@ -171,12 +170,6 @@ class UltrasonicSensorAPI(tornado.web.RequestHandler):
         str = str.format(self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_distance, self.application.ultrasonic_front_right_distance, self.application.obstacle, self.application.pilot_angle, self.application.pilot_throttle)
         self.write(str)
 			
-class ObstacleAPI(tornado.web.RequestHandler):
-    @tornado.web.asynchronous
-    @tornado.gen.coroutine
-    def get(self):
-        self.write(str(self.application.obstacle))
-
 class DriveAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.coroutine

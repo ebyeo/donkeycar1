@@ -149,6 +149,9 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
     def __init__(self, model=None, num_ultrasonic_inputs = 3, *args, **kwargs):
         super(KerasFuzzyAndUltrasonicSensors, self).__init__(*args, **kwargs)
         self.num_ultrasonic_inputs = num_ultrasonic_inputs
+        self.pilot_angle = 0
+        self.pilot_throttle = 0
+
         if model:
             self.model = model
         else:
@@ -156,7 +159,7 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
 
         # set the inference engine
         self.fuzzy = fuzzy()
-		self.on = True
+        self.on = True
 		
     def predict(self):
         img_arr = self.img_arr.reshape((1,) + self.img_arr.shape)
@@ -170,7 +173,7 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
         throttle_nn = throttle[0][0]
         throttle_final = throttle[0][0]
 
-        if obstacle == Constant.OBSTACLE_ACTION_STOP:
+        if self.obstacle == Constant.OBSTACLE_ACTION_STOP:
             throttle_final = 0.0
             print('stop due to obstacle that cannot be avoided')
         else:
@@ -187,27 +190,33 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
         return angle_final, throttle_final
 
     def update(self):
+        print("*************************** start keras fuzzy update", self.on)
         while self.on:
             self.pilot_angle, self.pilot_throttle = self.predict()
 			
     def run(self, img_arr, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, obstacle):
         self.img_arr = img_arr
         self.ultrasonic_front_distance = ultrasonic_front_distance
-		self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
-		self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
+        self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
+        self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
+        self.obstacle = obstacle
 		
-		angle_final, throttle_final = self.predict()
+        self.pilot_angle, self.pilot_throttle = self.predict()
 		
-        return angle_final, throttle_final
+        return self.pilot_angle, self.pilot_throttle
 		
     def run_threaded(self, img_arr, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, obstacle):
         self.img_arr = img_arr
         self.ultrasonic_front_distance = ultrasonic_front_distance
-		self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
-		self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
+        self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
+        self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
+        self.obstacle = obstacle
 		
-        return angle_final, throttle_final
+        return self.pilot_angle, self.pilot_throttle
 
+    def shutdown(self):
+        self.on = False
+    
 class KerasUltrasonicSensors(KerasPilot):
     def __init__(self, model=None, num_ultrasonic_inputs = 3, *args, **kwargs):
         super(KerasUltrasonicSensors, self).__init__(*args, **kwargs)
