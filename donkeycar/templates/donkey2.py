@@ -101,7 +101,7 @@ def drive(cfg, model_path=None, use_joystick=False, use_fuzzy=False):
     V.add(kl, 
           inputs=['cam/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance', 'pilot/action'],
           outputs=['pilot/angle', 'pilot/throttle'],
-          run_condition='run_pilot')
+          run_condition='run_pilot', threaded = True)
     
     #Choose what inputs should change the car.
     def drive_mode(mode, 

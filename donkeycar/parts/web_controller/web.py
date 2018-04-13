@@ -166,8 +166,18 @@ class UltrasonicSensorAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.coroutine
     def get(self):
+        if self.application.pilot_angle is None:
+            angle = 0.0
+        else:
+            angle = self.application.pilot_angle
+
+        if self.application.pilot_throttle is None:
+            throttle = 0.0
+        else:
+            throttle = self.application.pilot_throttle
+
         str = 'Left: {:.2f}, Center: {:.2f}, Right: {:.2f}, Obstacle: {}, Pilot Angle: {:.2f}, Pilot Throttle: {:.2f}'
-        str = str.format(self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_distance, self.application.ultrasonic_front_right_distance, self.application.obstacle, self.application.pilot_angle, self.application.pilot_throttle)
+        str = str.format(self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_distance, self.application.ultrasonic_front_right_distance, self.application.obstacle, angle, throttle)
         self.write(str)
 			
 class DriveAPI(tornado.web.RequestHandler):
