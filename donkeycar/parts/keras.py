@@ -17,6 +17,7 @@ os.environ['KERAS_BACKEND'] = 'tensorflow'  # chongwui
 import numpy as np
 import keras
 import time
+import tensorflow as tf
 
 import donkeycar as dk
 import donkeycar.constant as Constant
@@ -26,6 +27,10 @@ class KerasPilot():
  
     def load(self, model_path):
         self.model = keras.models.load_model(model_path)
+
+        # to handle multi threaded issue https://github.com/keras-team/keras/issues/2397
+        self.model._make_predict_function()
+        self.graph = tf.get_default_graph()
 
     
     def shutdown(self):
@@ -164,18 +169,18 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
             self.model = default_ultrasonicSensors(num_ultrasonic_inputs = num_ultrasonic_inputs)
 
         # set the inference engine
-#        self.fuzzy = fuzzy()
+        self.fuzzy = fuzzy()
         self.on = True
 		
     def predict(self):
         if self.img_arr is None:
             return 0, 0
 
-        print('Predicting 1......')
-
         img_arr = self.img_arr.reshape((1,) + self.img_arr.shape)
         ultrasonic_arr = np.array([self.ultrasonic_front_distance, self.ultrasonic_front_left_distance, self.ultrasonic_front_right_distance]).reshape(1, self.num_ultrasonic_inputs)
-        steering, throttle = self.model.predict([img_arr, ultrasonic_arr])
+
+        with self.graph.as_default():
+            steering, throttle = self.model.predict([img_arr, ultrasonic_arr])
         #print('throttle', throttle)
         #angle_certainty = max(angle_binned[0])
         angle_unbinned = dk.utils.linear_unbin(steering)
@@ -183,8 +188,6 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
         angle_final = angle_unbinned
         throttle_nn = throttle[0][0]
         throttle_final = throttle[0][0]
-
-        print('Predicting 2......')
 
         if self.obstacle == Constant.OBSTACLE_ACTION_STOP:
             throttle_final = 0.0
@@ -198,12 +201,10 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
 
                 str = 'fuzzy input: {:.2f}, fuzzy output: {:.2f}, left: {:.2f}, centre: {:.2f}, right: {:.2f}, throttle: {:.2f}'
                 str = str.format(angle_nn, angle_fuzzy, self.ultrasonic_front_left_distance, self.ultrasonic_front_distance, self.ultrasonic_front_right_distance, throttle_nn)
-                print(str)		
 
         return angle_final, throttle_final
 
     def update(self):
-        print("*************************** start keras fuzzy update", self.on)
         while self.on:
             self.pilot_angle, self.pilot_throttle = self.predict()
             time.sleep(0.05)
