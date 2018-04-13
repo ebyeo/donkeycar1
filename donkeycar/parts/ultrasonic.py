@@ -6,6 +6,9 @@ import time
 import numpy as np
 import RPi.GPIO as GPIO
 import sys
+
+ULTRASONIC_DEFAULT_DISTANCE = 2000.00
+
 class Ultrasonic():
     def __init__(self, gpio_trigger=23, gpio_echo=27, poll_delay=1, name=''):
 
@@ -73,6 +76,9 @@ class Ultrasonic():
 
     def poll_distance(self):
 
+        if GPIO.input(self.gpio_echo) == 1:
+            return ULTRASONIC_DEFAULT_DISTANCE
+
         # set Trigger to HIGH
         GPIO.output(self.gpio_trigger, True)
 		
@@ -84,25 +90,27 @@ class Ultrasonic():
         StopTime = time.time()
 		
         # save StartTime
-        timeout = time.time() + 0.1
         while GPIO.input(self.gpio_echo) == 0:
             StartTime = time.time()
-            if StartTime > timeout:
+            if StartTime - StopTime > 0.02:
+               distance = ULTRASONIC_DEFAULT_DISTANCE
                break
 
+        if distance == ULTRASONIC_DEFAULT_DISTANCE:
+            return (ULTRASONIC_DEFAULT_DISTANCE)
 
         # save time of arrival
-        timeout = time.time() + 0.1
         while GPIO.input(self.gpio_echo) == 1:
             StopTime = time.time()
-            if StopTime > timeout:
+            if StopTime - StartTime > 0.02:
+               distance = ULTRASONIC_DEFAULT_DISTANCE
                break
-			
-        # time difference between start and arrival
-        TimeElapsed = StopTime - StartTime
-        # multiply with the sonic speed (34300 cm/s)
-        # and divide by 2, because there and back
-        distance = (TimeElapsed * 34300) / 2
+
+        if distance == ULTRASONIC_DEFAULT_DISTANCE:
+            return (ULTRASONIC_DEFAULT_DISTANCE)
+
+        # Convert the timer values into centimetres
+        distance = (StopTime - StartTime) / 0.00000295 / 2 / 10
 
         return distance
 
