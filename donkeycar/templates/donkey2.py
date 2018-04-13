@@ -67,7 +67,7 @@ def drive(cfg, model_path=None, use_joystick=False, use_fuzzy=False):
         ctr = LocalWebController()
     
     V.add(ctr, 
-          inputs=['cam/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance', 'pilot/action'],
+          inputs=['cam/image_array', 'ultrasonic_front/distance', 'ultrasonic_front_left/distance', 'ultrasonic_front_right/distance', 'pilot/action', 'pilot/angle', 'pilot/throttle'],
           outputs=['user/angle', 'user/throttle', 'user/mode', 'recording'],
           threaded=True)
 

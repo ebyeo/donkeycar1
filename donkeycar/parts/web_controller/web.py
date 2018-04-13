@@ -138,21 +138,25 @@ class LocalWebController(tornado.web.Application):
         self.listen(self.port)
         tornado.ioloop.IOLoop.instance().start()
 
-    def run_threaded(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None, obstacle=None):
+    def run_threaded(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None, obstacle=None, pilot_angle = None, pilot_throttle = None):
         self.img_arr = img_arr
         self.ultrasonic_front_distance = ultrasonic_front_distance
         self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
         self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
         self.obstacle = obstacle
+		self.pilot_angle = pilot_angle
+		self.pilot_throttle = pilot_throttle
 		
         return self.angle, self.throttle, self.mode, self.recording
         
-    def run(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None, obstacle=None):
+    def run(self, img_arr=None, ultrasonic_front_distance=None, ultrasonic_front_left_distance=None, ultrasonic_front_right_distance=None, obstacle=None, pilot_angle = None pilot_throttle = None):
         self.img_arr = img_arr
         self.ultrasonic_front_distance = ultrasonic_front_distance
         self.ultrasonic_front_left_distance = ultrasonic_front_left_distance
         self.ultrasonic_front_right_distance = ultrasonic_front_right_distance
         self.obstacle = obstacle
+		self.pilot_angle = pilot_angle
+		self.pilot_throttle = pilot_throttle
 
         return self.angle, self.throttle, self.mode, self.recording
 		
@@ -163,8 +167,8 @@ class UltrasonicSensorAPI(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @tornado.gen.coroutine
     def get(self):
-        str = 'Front: {:.2f}, Front Left: {:.2f}, Front Right: {:.2f}, Obstacle: {}, Throttle: {:.2f}, Angle: {:.2f}'
-        str = str.format(self.application.ultrasonic_front_distance, self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_right_distance, self.application.obstacle, self.application.throttle, self.application.angle)
+        str = 'Left: {:.2f}, Center: {:.2f}, Right: {:.2f}, Obstacle: {}, Pilot Angle: {:.2f}, Pilot Throttle: {:.2f}'
+        str = str.format(self.application.ultrasonic_front_left_distance, self.application.ultrasonic_front_distance, self.application.ultrasonic_front_right_distance, self.application.obstacle, self.application.pilot_angle, self.application.pilot_throttle)
         self.write(str)
 			
 class ObstacleAPI(tornado.web.RequestHandler):
