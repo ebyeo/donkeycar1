@@ -13,6 +13,7 @@ models to help direct the vehicles motion.
 
 
 import os
+os.environ['KERAS_BACKEND'] = 'tensorflow'  # chongwui
 import numpy as np
 import keras
 
@@ -186,7 +187,7 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
 
 class KerasUltrasonicSensors(KerasPilot):
     def __init__(self, model=None, num_ultrasonic_inputs = 3, *args, **kwargs):
-        super(KerasFuzzyAndUltrasonicSensors, self).__init__(*args, **kwargs)
+        super(KerasUltrasonicSensors, self).__init__(*args, **kwargs)
         self.num_ultrasonic_inputs = num_ultrasonic_inputs
         if model:
             self.model = model
