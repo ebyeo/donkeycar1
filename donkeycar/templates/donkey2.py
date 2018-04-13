@@ -23,6 +23,7 @@ from donkeycar.parts.keras import KerasFuzzyAndUltrasonicSensors, KerasUltrasoni
 from donkeycar.parts.datastore import TubHandler, TubGroup
 from donkeycar.parts.controller import LocalWebController, JoystickController
 import numpy as np
+import tensorflow as tf
 
 
 def drive(cfg, model_path=None, use_joystick=False, use_fuzzy=False):
@@ -182,7 +183,8 @@ def train(cfg, tub_names, model_name):
     steps_per_epoch = total_train // cfg.BATCH_SIZE
     print('steps_per_epoch', steps_per_epoch)
 
-    kl.train(train_gen,
+    with tf.device('/gpu:1'): 
+        kl.train(train_gen,
              val_gen,
              saved_model_path=model_path,
              steps=steps_per_epoch,
