@@ -252,6 +252,9 @@ class KerasUltrasonicSensors(KerasPilot):
         self.on = True
 		
     def predict(self):
+        if self.img_arr is None:
+            return 0, 0
+
         img_arr = self.img_arr.reshape((1,) + self.img_arr.shape)
         ultrasonic_arr = np.array([self.ultrasonic_front_distance, self.ultrasonic_front_left_distance, self.ultrasonic_front_right_distance]).reshape(1, self.num_ultrasonic_inputs)
 

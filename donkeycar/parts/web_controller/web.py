@@ -118,6 +118,14 @@ class LocalWebController(tornado.web.Application):
         self.mode = 'user'
         self.recording = False
 
+        self.img_arr = None
+        self.ultrasonic_front_distance = 0.0
+        self.ultrasonic_front_left_distance = 0.0
+        self.ultrasonic_front_right_distance = 0.0
+        self.obstacle = 0
+        self.pilot_angle = 0.0
+        self.pilot_throttle = 0.0
+
         handlers = [
             (r"/", tornado.web.RedirectHandler, dict(url="/drive")),
             (r"/drive", DriveAPI),
@@ -169,9 +177,9 @@ class UltrasonicSensorAPI(tornado.web.RequestHandler):
         data = {}
 		
         data['front_left'] = self.application.ultrasonic_front_left_distance
-		data['front'] = self.application.ultrasonic_front_distance
-		data['front_right'] = self.application.ultrasonic_front_right_distance
-		data['obstacle'] = self.application.obstacle
+        data['front'] = self.application.ultrasonic_front_distance
+        data['front_right'] = self.application.ultrasonic_front_right_distance
+        data['obstacle'] = self.application.obstacle
 		
         if self.application.pilot_angle is None:
             data['angle'] = 0.0
@@ -183,6 +191,7 @@ class UltrasonicSensorAPI(tornado.web.RequestHandler):
         else:
             data['throttle'] = self.application.pilot_throttle
 
+        print('****************', data)
         self.set_header('Content-Type', 'application/json')
         self.write(json.dumps(data, default = json_util.default))
 			
