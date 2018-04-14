@@ -64,7 +64,6 @@ class Ultrasonic():
     def update(self):
         while self.on:
             self.distance = self.poll_distance_with_smoothing()
-            print('ultrasonic', self.name, ':', self.distance)
             time.sleep(self.poll_delay)
             
     def run_threaded(self):

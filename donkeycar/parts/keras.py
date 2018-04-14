@@ -199,8 +199,9 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
                 angle_fuzzy = self.fuzzy.defuzzify()
                 angle_final = angle_fuzzy
 
-                str = 'fuzzy input: {:.2f}, fuzzy output: {:.2f}, left: {:.2f}, centre: {:.2f}, right: {:.2f}, throttle: {:.2f}'
-                str = str.format(angle_nn, angle_fuzzy, self.ultrasonic_front_left_distance, self.ultrasonic_front_distance, self.ultrasonic_front_right_distance, throttle_nn)
+                str = 'timestamp: {:.6f}, fuzzy input: {:.2f}, fuzzy output: {:.2f}, left: {:.2f}, centre: {:.2f}, right: {:.2f}, throttle: {:.2f}'
+                str = str.format(time.time(), angle_nn, angle_fuzzy, self.ultrasonic_front_left_distance, self.ultrasonic_front_distance, self.ultrasonic_front_right_distance, throttle_nn)
+                print(str)
 
         return angle_final, throttle_final
 
