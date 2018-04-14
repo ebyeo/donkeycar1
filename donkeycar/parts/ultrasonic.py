@@ -7,7 +7,9 @@ import numpy as np
 import RPi.GPIO as GPIO
 import sys
 
-ULTRASONIC_DEFAULT_DISTANCE = 2000.00
+ULTRASONIC_DEFAULT_DISTANCE = 400.00
+ULTRASONIC_RETRY = 3
+ULTRASONIC_MEAN_LENGTH = 3
 
 class Ultrasonic():
     def __init__(self, gpio_trigger=23, gpio_echo=27, poll_delay=1, name=''):
@@ -30,6 +32,9 @@ class Ultrasonic():
         GPIO.setup(self.gpio_echo, GPIO.IN)
 
         self.distance = 0.0
+        self.distance_array = []
+        for i in range(1, ULTRASONIC_MEAN_LENGTH):
+           self.distance_array = self.distance_array + [0] 
 
         self.on = True
 
@@ -58,7 +63,7 @@ class Ultrasonic():
 
     def update(self):
         while self.on:
-            self.distance = self.poll_distance()
+            self.distance = self.poll_distance_with_smoothing()
             print('ultrasonic', self.name, ':', self.distance)
             time.sleep(self.poll_delay)
             
@@ -103,6 +108,7 @@ class Ultrasonic():
             return (ULTRASONIC_DEFAULT_DISTANCE)
 
         # save time of arrival
+        StopTime = StartTime
         while GPIO.input(self.gpio_echo) == 1:
             StopTime = time.time()
             if StopTime - StartTime > 0.02:
@@ -113,9 +119,28 @@ class Ultrasonic():
             return (ULTRASONIC_DEFAULT_DISTANCE)
 
         # Convert the timer values into centimetres
-        distance = (StopTime - StartTime) / 0.00000295 / 2 / 10
+        distance = (StopTime - StartTime) * 34300 / 2
 
         return distance
+
+    def poll_distance_with_retry(self):
+        retry = 0
+        distance = self.poll_distance()
+        while distance == ULTRASONIC_DEFAULT_DISTANCE:
+            distance = self.poll_distance()
+            retry = retry + 1
+            if retry == ULTRASONIC_RETRY:
+                retry = 0
+                break
+
+        return distance
+            
+    def poll_distance_with_smoothing(self):
+        distance = self.poll_distance()
+
+        self.distance_array = self.distance_array[1:] + [distance]
+
+        return np.mean(self.distance_array)
 
 class MockUltrasonic():
     def __init__(self, gpio_trigger = 12, gpio_echo = 16, poll_delay=1, name=''):
@@ -155,9 +180,11 @@ if __name__ == "__main__":
         exit(1)
 
     iter = 0
+    d = [0, 0, 0, 0]
     u = Ultrasonic(gpio_trigger=int(args[1]), gpio_echo=int(args[2]))
-    while iter < 50:
-        data = u.run()
-        print(data)
-        time.sleep(1.0)
+    while iter < 1000:
+        data = u.poll_distance_with_smoothing()
+        d = d[1:] + [data]
+        print('ultrasonic: ', data, np.mean(d))
+        time.sleep(1/20)
         iter += 1
