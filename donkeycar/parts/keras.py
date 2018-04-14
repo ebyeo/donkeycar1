@@ -483,25 +483,16 @@ def default_ultrasonicSensors(num_ultrasonic_inputs):
     x = Flatten(name='flattened')(x)
     x = Dense(100, activation='relu')(x)
     x = Dropout(.1)(x)
-    
-    y = ultrasonic_in
-    y = Dense(14, activation='relu')(y)
-    y = Dense(14, activation='relu')(y)
-    y = Dense(14, activation='relu')(y)
-    
-    z = concatenate([x, y])
-    z = Dense(50, activation='relu')(z)
-    z = Dropout(.1)(z)
-    z = Dense(50, activation='relu')(z)
-    z = Dropout(.1)(z)
+    x = Dense(50, activation='relu')(x)
+    x = Dropout(.1)(x)
 
     #categorical output of the angle
-    angle_out = Dense(15, activation='softmax', name='angle_out')(z)        # Connect every input with every output and output 15 hidden units. Use Softmax to give percentage. 15 categories and find best one based off percentage 0.0-1.0
+    angle_out = Dense(15, activation='softmax', name='angle_out')(x)        # Connect every input with every output and output 15 hidden units. Use Softmax to give percentage. 15 categories and find best one based off percentage 0.0-1.0
     
     #continous output of throttle
-    throttle_out = Dense(1, activation='relu', name='throttle_out')(z)      # Reduce to 1 number, Positive number only
+    throttle_out = Dense(1, activation='relu', name='throttle_out')(x)      # Reduce to 1 number, Positive number only
 
-    model = Model(inputs=[img_in, ultrasonic_in], outputs=[angle_out, throttle_out])
+    model = Model(inputs=[img_in], outputs=[angle_out, throttle_out])
     
     model.compile(optimizer='adam',
                   loss={'angle_out': 'categorical_crossentropy', 
