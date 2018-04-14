@@ -137,14 +137,13 @@ var driveHandler = new function() {
             url: ultrasonicSensorURL,
             dataType:'json'
 	}).done(function(data) {
-            var obj = JSON.parse(data);
+            state.tele.pilot.angle = data.angle;
+            state.tele.pilot.throttle = data.throttle;
 
-            state.tele.pilot.angle = obj.angle;
-            state.tele.pilot.throttle = obj.throttle;
-
-            state.distances = "Left: " + obj.front_left.toFixed(2) + " Center: " + obj.front.toFixed(2) + " Right: " + obj.front_right.toFixed(2);
+            state.distances = "Left: " + data.front_left.toFixed(2) + " Center: " + data.front.toFixed(2) + " Right: " + data.front_right.toFixed(2) + " Angle: " + data.angle.toFixed(2) + " Throttle: " + data.throttle.toFixed(2);
 			
             $('#distances').text(state.distances);
+            updateUI()
         });
     }
 
@@ -193,26 +192,34 @@ var driveHandler = new function() {
       var steeringPercent = 0;
       var throttleRounded = 0;
       var steeringRounded = 0;
+      var steeringExact = 0;
+      var throttleExact = 0;
       if (state.driveMode == 'local') {
           throttlePercent = Math.round(Math.abs(state.tele.pilot.throttle) * 100) + '%';
           steeringPercent = Math.round(Math.abs(state.tele.pilot.angle) * 100) + '%';
           throttleRounded = state.tele.pilot.throttle.toFixed(2);
           steeringRounded = state.tele.pilot.angle.toFixed(2);
+
+          throttleExact = state.tele.pilot.throttle
+          steeringExact = state.tele.pilot.angle
       } else { 
           throttlePercent = Math.round(Math.abs(state.tele.user.throttle) * 100) + '%';
           steeringPercent = Math.round(Math.abs(state.tele.user.angle) * 100) + '%';
           throttleRounded = state.tele.user.throttle.toFixed(2);
           steeringRounded = state.tele.user.angle.toFixed(2);
-      }
 	  
+          throttleExact = state.tele.user.throttle
+          steeringExact = state.tele.user.angle
+      }
+
       $('#throttle_label').html(throttleRounded);
       $('#steering_label').html(steeringRounded);
 
-      if(state.tele.user.throttle < 0) {
+      if(throttleExact < 0) {
         $('#throttle-bar-backward').css('width', throttlePercent).html(throttleRounded)
         $('#throttle-bar-forward').css('width', '0%').html('')
       }
-      else if (state.tele.user.throttle > 0) {
+      else if (throttleExact > 0) {
         $('#throttle-bar-backward').css('width', '0%').html('')
         $('#throttle-bar-forward').css('width', throttlePercent).html(throttleRounded)
       }
@@ -221,11 +228,11 @@ var driveHandler = new function() {
         $('#throttle-bar-backward').css('width', '0%').html('')
       }
 
-      if(state.tele.user.angle < 0) {
+      if(steeringExact < 0) {
         $('#angle-bar-backward').css('width', steeringPercent).html(steeringRounded)
         $('#angle-bar-forward').css('width', '0%').html('')
       }
-      else if (state.tele.user.angle > 0) {
+      else if (steeringExact > 0) {
         $('#angle-bar-backward').css('width', '0%').html('')
         $('#angle-bar-forward').css('width', steeringPercent).html(steeringRounded)
       }
