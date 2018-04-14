@@ -157,12 +157,11 @@ def train(cfg, tub_names, model_name):
     use the specified data in tub_names to train an artificial neural network
     saves the output trained model as model_name
     '''
-    X_keys = ['cam/image_array', 'ultrasonic_array']
+    X_keys = ['cam/image_array']
     y_keys = ['user/angle', 'user/throttle']
 
     def rt(record):
         record['user/angle'] = dk.utils.linear_bin(record['user/angle'])
-        record['ultrasonic_array'] = np.array([ record['ultrasonic_front/distance'], record['ultrasonic_front_left/distance'], record['ultrasonic_front_right/distance'] ])
         return record
 
     kl = KerasFuzzyAndUltrasonicSensors()
