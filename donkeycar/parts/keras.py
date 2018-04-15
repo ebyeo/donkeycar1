@@ -190,7 +190,9 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
 
         if self.obstacle == Constant.OBSTACLE_ACTION_STOP:
             throttle_final = 0.0
-            print('stop due to obstacle that cannot be avoided')
+            str = 'timestamp: {:.6f}, fuzzy input: {:.2f}, fuzzy output: {:.2f}, left: {:.2f}, centre: {:.2f}, right: {:.2f}, throttle: {:.2f}, STOP'
+            str = str.format(time.time(), angle_nn, -1, self.ultrasonic_front_left_distance, self.ultrasonic_front_distance, self.ultrasonic_front_right_distance, throttle_nn)
+            print(str)
         else:
             if self.fuzzy.checkData(angle_nn, self.ultrasonic_front_left_distance, self.ultrasonic_front_distance, self.ultrasonic_front_right_distance) == True:
 
@@ -258,7 +260,7 @@ class KerasUltrasonicSensors(KerasPilot):
         img_arr = self.img_arr.reshape((1,) + self.img_arr.shape)
 
         with self.graph.as_default():
-            steering, throttle = self.model.predict([img_arr)
+            steering, throttle = self.model.predict([img_arr])
 
         angle_unbinned = dk.utils.linear_unbin(steering)
         angle_nn = angle_unbinned
