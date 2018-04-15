@@ -161,7 +161,7 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
         self.ultrasonic_front_distance = 0
         self.ultrasonic_front_left_distance = 0
         self.ultrasonic_front_right_distance = 0
-        self.obstacle = 0
+        self.obstacle = Constant.OBSTACLE_ACTION_FORWARD
 
         if model:
             self.model = model
@@ -177,7 +177,7 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
             return 0, 0
 
         img_arr = self.img_arr.reshape((1,) + self.img_arr.shape)
-
+        a1 = time.time()
         with self.graph.as_default():
             steering, throttle = self.model.predict([img_arr])
         #print('throttle', throttle)
@@ -187,6 +187,7 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
         angle_final = angle_unbinned
         throttle_nn = throttle[0][0]
         throttle_final = throttle[0][0]
+        a2 = time.time()
 
         if self.obstacle == Constant.OBSTACLE_ACTION_STOP:
             throttle_final = 0.0
@@ -204,6 +205,9 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
                 str = str.format(time.time(), angle_nn, angle_fuzzy, self.ultrasonic_front_left_distance, self.ultrasonic_front_distance, self.ultrasonic_front_right_distance, throttle_nn)
                 print(str)
 
+        a3 = time.time()
+        print('nn:', a2 - a1, 'fuzzy:', a3 - a2)
+		
         return angle_final, throttle_final
 
     def update(self):
