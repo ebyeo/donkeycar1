@@ -188,6 +188,7 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
         throttle_nn = throttle[0][0]
         throttle_final = throttle[0][0]
         a2 = time.time()
+        a3 = time.time()
 
         if self.obstacle == Constant.OBSTACLE_ACTION_STOP:
             throttle_final = 0.0
@@ -204,8 +205,8 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
                 str = 'timestamp: {:.6f}, fuzzy input: {:.2f}, fuzzy output: {:.2f}, left: {:.2f}, centre: {:.2f}, right: {:.2f}, throttle: {:.2f}'
                 str = str.format(time.time(), angle_nn, angle_fuzzy, self.ultrasonic_front_left_distance, self.ultrasonic_front_distance, self.ultrasonic_front_right_distance, throttle_nn)
                 print(str)
+                a3 = time.time()
 
-        a3 = time.time()
         print('nn:', a2 - a1, 'fuzzy:', a3 - a2)
 		
         return angle_final, throttle_final
