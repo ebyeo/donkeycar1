@@ -166,7 +166,6 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
         if model:
             self.model = model
         else:
-#            self.model = default_ultrasonicSensors(num_ultrasonic_inputs = num_ultrasonic_inputs)
             self.model = default_categoricalCustom()
 
         # set the inference engine
@@ -178,10 +177,9 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
             return 0, 0
 
         img_arr = self.img_arr.reshape((1,) + self.img_arr.shape)
-        ultrasonic_arr = np.array([self.ultrasonic_front_distance, self.ultrasonic_front_left_distance, self.ultrasonic_front_right_distance]).reshape(1, self.num_ultrasonic_inputs)
 
         with self.graph.as_default():
-            steering, throttle = self.model.predict([img_arr, ultrasonic_arr])
+            steering, throttle = self.model.predict([img_arr])
         #print('throttle', throttle)
         #angle_certainty = max(angle_binned[0])
         angle_unbinned = dk.utils.linear_unbin(steering)
@@ -249,7 +247,7 @@ class KerasUltrasonicSensors(KerasPilot):
         if model:
             self.model = model
         else:
-            self.model = default_ultrasonicSensors(num_ultrasonic_inputs = num_ultrasonic_inputs)
+            self.model = default_categoricalCustom()
 
         self.on = True
 		
@@ -258,10 +256,9 @@ class KerasUltrasonicSensors(KerasPilot):
             return 0, 0
 
         img_arr = self.img_arr.reshape((1,) + self.img_arr.shape)
-        ultrasonic_arr = np.array([self.ultrasonic_front_distance, self.ultrasonic_front_left_distance, self.ultrasonic_front_right_distance]).reshape(1, self.num_ultrasonic_inputs)
 
         with self.graph.as_default():
-            steering, throttle = self.model.predict([img_arr, ultrasonic_arr])
+            steering, throttle = self.model.predict([img_arr)
 
         angle_unbinned = dk.utils.linear_unbin(steering)
         angle_nn = angle_unbinned
@@ -461,45 +458,6 @@ def default_imu(num_outputs, num_imu_inputs):
     model.compile(optimizer='adam',
                   loss='mse')
     
-    return model
-	
-def default_ultrasonicSensors(num_ultrasonic_inputs):
-
-    from keras.layers import Input, Dense
-    from keras.models import Model
-    from keras.layers import Convolution2D, MaxPooling2D, Reshape, BatchNormalization
-    from keras.layers import Activation, Dropout, Flatten, Cropping2D, Lambda
-    from keras.layers.merge import concatenate
-    
-    img_in = Input(shape=(120,160,3), name='img_in')
-    ultrasonic_in = Input(shape=(num_ultrasonic_inputs,), name="ultrasonic_in")
-    
-    x = img_in
-    x = Cropping2D(cropping=((60,0), (0,0)))(x) #trim 60 pixels off top
-    #x = Lambda(lambda x: x/127.5 - 1.)(x) # normalize and re-center
-    x = Convolution2D(24, (5,5), strides=(2,2), activation='relu')(x)
-    x = Convolution2D(32, (5,5), strides=(2,2), activation='relu')(x)
-    x = Convolution2D(64, (3,3), strides=(2,2), activation='relu')(x)
-    x = Convolution2D(64, (3,3), strides=(1,1), activation='relu')(x)
-    x = Convolution2D(64, (3,3), strides=(1,1), activation='relu')(x)
-    x = Flatten(name='flattened')(x)
-    x = Dense(100, activation='relu')(x)
-    x = Dropout(.1)(x)
-    x = Dense(50, activation='relu')(x)
-    x = Dropout(.1)(x)
-
-    #categorical output of the angle
-    angle_out = Dense(15, activation='softmax', name='angle_out')(x)        # Connect every input with every output and output 15 hidden units. Use Softmax to give percentage. 15 categories and find best one based off percentage 0.0-1.0
-    
-    #continous output of throttle
-    throttle_out = Dense(1, activation='relu', name='throttle_out')(x)      # Reduce to 1 number, Positive number only
-
-    model = Model(inputs=[img_in], outputs=[angle_out, throttle_out])
-    
-    model.compile(optimizer='adam',
-                  loss={'angle_out': 'categorical_crossentropy', 
-                        'throttle_out': 'mean_absolute_error'},
-                  loss_weights={'angle_out': 0.9, 'throttle_out': .001})
     return model
 
 def default_categoricalCustom():
