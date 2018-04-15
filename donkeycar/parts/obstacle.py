@@ -77,8 +77,10 @@ class Obstacle():
         self.front_right_distance_array = self.front_right_distance_array[1:] + [self.ultrasonic_front_right_distance]
 
         self.action = self.compute_action()
+
+        return Constant.OBSTACLE_ACTION_FORWARD
 		
-        return self.action
+#        return self.action
 		
     def shutdown(self):
         # indicate that the thread should be stopped
