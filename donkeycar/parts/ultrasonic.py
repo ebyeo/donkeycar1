@@ -147,7 +147,7 @@ class MockUltrasonic():
         self.gpio_echo = gpio_echo
         self.poll_delay = poll_delay
         self.name = name
-        self.distance = 0.0
+        self.distance = 400.0
         self.on = True
 
     def update(self):

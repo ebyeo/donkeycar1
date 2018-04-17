@@ -28,7 +28,7 @@ import tensorflow as tf
 
 def drive(cfg, model_path=None, use_joystick=False, use_fuzzy=False):
     from donkeycar.parts.camera import PiCamera
-    from donkeycar.parts.ultrasonic import Ultrasonic
+    from donkeycar.parts.ultrasonic import Ultrasonic, MockUltrasonic
     from donkeycar.parts.actuator import PCA9685, PWMSteering, PWMThrottle
     from donkeycar.parts.obstacle import Obstacle
     '''
@@ -49,10 +49,10 @@ def drive(cfg, model_path=None, use_joystick=False, use_fuzzy=False):
     us_front = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_ECHO, name='front')
     V.add(us_front, outputs=['ultrasonic_front/distance'], threaded=True)
 	
-    us_front_left = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_LEFT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_LEFT_ECHO, name='front left')
+    us_front_left = MockUltrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_LEFT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_LEFT_ECHO, poll_delay = 1.2, name='front left')
     V.add(us_front_left, outputs=['ultrasonic_front_left/distance'], threaded=True)
 	
-    us_front_right = Ultrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_RIGHT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_RIGHT_ECHO, name='front right')
+    us_front_right = MockUltrasonic(gpio_trigger=cfg.ULTRASONIC_FRONT_RIGHT_TRIGGER, gpio_echo=cfg.ULTRASONIC_FRONT_RIGHT_ECHO, poll_delay = 1.2, name='front right')
     V.add(us_front_right, outputs=['ultrasonic_front_right/distance'], threaded=True)
 	
     if use_joystick or cfg.USE_JOYSTICK_AS_DEFAULT:
