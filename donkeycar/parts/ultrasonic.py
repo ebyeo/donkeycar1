@@ -9,15 +9,17 @@ import sys
 
 ULTRASONIC_DEFAULT_DISTANCE = 800.00
 ULTRASONIC_RETRY = 3
-ULTRASONIC_MEAN_LENGTH = 3
+ULTRASONIC_MEAN_LENGTH = 9
 ULTRASONIC_TIMEOUT = 0.05
 
 MOCKULTRASONIC_DEFAULT_DISTANCE = 800.0
 CACHEULTRASONICCLIENT_DEFAULT_DISTANCE = 800.0
 
-class Ultrasonic():
-    def __init__(self, gpio_trigger=23, gpio_echo=27, poll_delay=1, name=''):
+################################################################################
 
+class Ultrasonic():
+
+    def __init__(self, gpio_trigger=23, gpio_echo=27, poll_delay=1, name=''):
         self.gpio_trigger = gpio_trigger
         self.gpio_echo = gpio_echo
         self.poll_delay = poll_delay
@@ -37,12 +39,12 @@ class Ultrasonic():
 
         self.distance = 0.0
         self.distance_array = []
-        for i in range(1, ULTRASONIC_MEAN_LENGTH):
+        for i in range(0, ULTRASONIC_MEAN_LENGTH):
            self.distance_array = self.distance_array + [0] 
 
         self.on = True
 
-        self.getid(self.gpio_trigger, self.gpio_echo)
+        #self.getid(self.gpio_trigger, self.gpio_echo)
 
     def getid(self, gpio_trigger, gpio_echo):
         if (gpio_trigger==18 and gpio_echo==17):
@@ -86,7 +88,7 @@ class Ultrasonic():
     def poll_distance(self):
 
         if GPIO.input(self.gpio_echo) == 1:
-            return ULTRASONIC_DEFAULT_DISTANCE
+            return ULTRASONIC_DEFAULT_DISTANCE-1
 
         distance = 0
 
@@ -97,8 +99,9 @@ class Ultrasonic():
         time.sleep(0.00001)
         GPIO.output(self.gpio_trigger, False)
 		
-        StartTime = time.time()
-        StopTime = time.time()
+        #StartTime = time.time()
+        #StopTime = time.time()
+        StartTime = StopTime = time.time()
 		
         # save StartTime
         while GPIO.input(self.gpio_echo) == 0:
@@ -108,7 +111,7 @@ class Ultrasonic():
                break
 
         if distance == ULTRASONIC_DEFAULT_DISTANCE:
-            return (ULTRASONIC_DEFAULT_DISTANCE)
+            return (ULTRASONIC_DEFAULT_DISTANCE-2)
 
         # save time of arrival
         StopTime = StartTime
@@ -119,7 +122,7 @@ class Ultrasonic():
                break
 
         if distance == ULTRASONIC_DEFAULT_DISTANCE:
-            return (ULTRASONIC_DEFAULT_DISTANCE)
+            return (ULTRASONIC_DEFAULT_DISTANCE-3)
 
         # Convert the timer values into centimetres
         distance = (StopTime - StartTime) * 34300 / 2
@@ -145,7 +148,10 @@ class Ultrasonic():
 
         return np.mean(self.distance_array)
 
+################################################################################
+
 class MockUltrasonic():
+
     def __init__(self, gpio_trigger = 12, gpio_echo = 16, poll_delay=1, name=''):
         self.gpio_trigger = gpio_trigger
         self.gpio_echo = gpio_echo
@@ -173,35 +179,41 @@ class MockUltrasonic():
 		
     def poll_distance(self):
         return MOCKULTRASONIC_DEFAULT_DISTANCE
-		
+
+################################################################################
+
 class CacheUltrasonicServer(Ultrasonic):
+
     def __init__(self, gpio_trigger=23, gpio_echo=27, poll_delay=1, name=''):
 
-        super().__init__(self, gpio_trigger=gpio_trigger, gpio_echo=gpio_echo, poll_delay=poll_delay, name=name)
+        super().__init__(gpio_trigger, gpio_echo, poll_delay, name)
 		
         from pymemcache.client import base
-        client = base.Client(('localhost', 11211))
+        self.client = base.Client(('localhost', 11211))
 
     def update(self):
         while self.on:
             self.distance = self.poll_distance_with_smoothing()
-            client.set('ultrasonic_' + self.name, self.distance)
+            self.client.set('ultrasonic_' + self.name, self.distance)
             time.sleep(self.poll_delay)
             
     def run(self):
-        self.distance = self.poll_distance()
-        client.set('ultrasonic_' + self.name, self.distance)
+        self.distance = self.poll_distance_with_smoothing()
+        self.client.set('ultrasonic_' + self.name, self.distance)
         return self.distance
 
     def shutdown(self):
         super().shutdown()
-        client.close()
+        self.client.close()
+
+################################################################################
 
 # to be called in the donkeycar loop
 class CacheUltrasonicClient():
+
     def __init__(self, gpio_trigger = 12, gpio_echo = 16, poll_delay=1, name=''):
         from pymemcache.client import base
-        client = base.Client(('localhost', 11211))
+        self.client = base.Client(('localhost', 11211))
 
         self.gpio_trigger = gpio_trigger
         self.gpio_echo = gpio_echo
@@ -226,11 +238,15 @@ class CacheUltrasonicClient():
         print('Shutdown cache ultrasonic client', self.name)
         self.on = False
         time.sleep(1)
+        self.client.close()
 		
     def poll_distance(self):
-        distance = client.get('ultrasonic_' + self.name)
+        distance = self.client.get('ultrasonic_' + self.name)
+
         if not distance:
-		    distance = CACHEULTRASONICCLIENT_DEFAULT_DISTANCE
+            distance = CACHEULTRASONICCLIENT_DEFAULT_DISTANCE
+        else:
+            distance = float(distance)
 			
         return distance
 
@@ -238,14 +254,28 @@ if __name__ == "__main__":
 
     from sys import argv
     args = argv
-    if (len(args) != 3):
-        print("Enter trigger and echo pin number as arguments, eg python ultrasonic.py 23 27")
+
+    if (len(args) == 2):
+        if args[1] != 'client':
+            print("If you wish to run as client, eg python ultrasonic.py client")
+            exit(1)
+        else:
+            iter = 0
+            u = CacheUltrasonicClient(gpio_trigger=0, gpio_echo=0, name = 'front_left')
+
+            while iter < 1000:
+                data = u.run()
+                print('ultrasonic: ', float(data))
+                time.sleep(1/20)
+                iter += 1
+
+    elif (len(args) != 5):
+        print("Enter trigger and echo pin number as arguments, eg python ultrasonic.py server 16 13 front_left")
         exit(1)
 
-    iter = 0
-    u = CacheUltrasonicServer(gpio_trigger=int(args[1]), gpio_echo=int(args[2]))
-    while iter < 1000:
-        data = u.run()
-        print('ultrasonic: ', data)
-        time.sleep(1/20)
-        iter += 1
+    else:
+        u = Ultrasonic(gpio_trigger=int(args[2]), gpio_echo=int(args[3]), name = args[4])
+        while True:
+            data = u.run()
+            print('ultrasonic: ', data)
+            time.sleep(1.0)
