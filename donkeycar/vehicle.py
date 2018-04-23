@@ -100,6 +100,8 @@ class Vehicle():
                 if sleep_time > 0.0:
                     time.sleep(sleep_time)
 
+                #print('this is the vehicle loop', loop_count)
+
         except KeyboardInterrupt:
             pass
         finally:

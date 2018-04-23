@@ -23,6 +23,8 @@ import donkeycar as dk
 import donkeycar.constant as Constant
 from donkeycar.parts.fuzzy import fuzzy
 
+POLL_DELAY_KERAS = 0.05    # seconds
+
 class KerasPilot():
  
     def load(self, model_path):
@@ -152,8 +154,11 @@ class KerasIMU(KerasPilot):
         return steering[0][0], throttle[0][0]
 
 class KerasFuzzyAndUltrasonicSensors(KerasPilot):
+
     def __init__(self, model=None, num_ultrasonic_inputs = 3, *args, **kwargs):
+
         super(KerasFuzzyAndUltrasonicSensors, self).__init__(*args, **kwargs)
+
         self.num_ultrasonic_inputs = num_ultrasonic_inputs
         self.pilot_angle = 0
         self.pilot_throttle = 0
@@ -187,8 +192,7 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
         angle_final = angle_unbinned
         throttle_nn = throttle[0][0]
         throttle_final = throttle[0][0]
-        a2 = time.time()
-        a3 = time.time()
+        a2 = a3 = time.time()
 
         if self.obstacle == Constant.OBSTACLE_ACTION_STOP:
             throttle_final = 0.0
@@ -196,8 +200,7 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
             str = str.format(time.time(), angle_nn, -1, self.ultrasonic_front_left_distance, self.ultrasonic_front_distance, self.ultrasonic_front_right_distance, throttle_nn)
             print(str)
         else:
-            if self.fuzzy.checkData(angle_nn, self.ultrasonic_front_left_distance, self.ultrasonic_front_distance, self.ultrasonic_front_right_distance) == True:
-
+            if self.fuzzy.checkData(angle_nn, self.ultrasonic_front_left_distance, self.ultrasonic_front_distance, self.ultrasonic_front_right_distance) == True: 
                 # evaluate each row by defuzzification
                 angle_fuzzy = self.fuzzy.defuzzify()
                 angle_final = angle_fuzzy
@@ -214,7 +217,7 @@ class KerasFuzzyAndUltrasonicSensors(KerasPilot):
     def update(self):
         while self.on:
             self.pilot_angle, self.pilot_throttle = self.predict()
-            time.sleep(0.05)
+            time.sleep(POLL_DELAY_KERAS)
 			
     def run(self, img_arr, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, obstacle):
         self.img_arr = img_arr
@@ -282,7 +285,7 @@ class KerasUltrasonicSensors(KerasPilot):
     def update(self):
         while self.on:
             self.pilot_angle, self.pilot_throttle = self.predict()
-            time.sleep(0.05)
+            time.sleep(POLL_DELAY_KERAS)
 			
     def run(self, img_arr, ultrasonic_front_distance, ultrasonic_front_left_distance, ultrasonic_front_right_distance, obstacle):
         self.img_arr = img_arr

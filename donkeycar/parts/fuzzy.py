@@ -19,24 +19,24 @@ MAX_DISTANCE = 400
 FUZ_DISTANCE = 10
 
 FUZZY_DIST_NEAR_LEFT_LO = MIN_DISTANCE
-FUZZY_DIST_NEAR_LEFT_HI = 50
-FUZZY_DIST_MED_LEFT_LO  = 40
-FUZZY_DIST_MED_LEFT_HI  = 100
-FUZZY_DIST_FAR_LEFT_LO  = 90
+FUZZY_DIST_NEAR_LEFT_HI = 75
+FUZZY_DIST_MED_LEFT_LO  = 65
+FUZZY_DIST_MED_LEFT_HI  = 150
+FUZZY_DIST_FAR_LEFT_LO  = 140
 FUZZY_DIST_FAR_LEFT_HI  = MAX_DISTANCE
 
 FUZZY_DIST_NEAR_CENT_LO = MIN_DISTANCE
-FUZZY_DIST_NEAR_CENT_HI = 50
-FUZZY_DIST_MED_CENT_LO  = 40
-FUZZY_DIST_MED_CENT_HI  = 100
-FUZZY_DIST_FAR_CENT_LO  = 90
+FUZZY_DIST_NEAR_CENT_HI = 75
+FUZZY_DIST_MED_CENT_LO  = 65
+FUZZY_DIST_MED_CENT_HI  = 150
+FUZZY_DIST_FAR_CENT_LO  = 140
 FUZZY_DIST_FAR_CENT_HI  = MAX_DISTANCE
 
 FUZZY_DIST_NEAR_RIGHT_LO = MIN_DISTANCE
-FUZZY_DIST_NEAR_RIGHT_HI = 50
-FUZZY_DIST_MED_RIGHT_LO  = 40
-FUZZY_DIST_MED_RIGHT_HI  = 100
-FUZZY_DIST_FAR_RIGHT_LO  = 90
+FUZZY_DIST_NEAR_RIGHT_HI = 75
+FUZZY_DIST_MED_RIGHT_LO  = 65
+FUZZY_DIST_MED_RIGHT_HI  = 150
+FUZZY_DIST_FAR_RIGHT_LO  = 140
 FUZZY_DIST_FAR_RIGHT_HI  = MAX_DISTANCE
 
 # fuzzy trapezium membership for angle (degrees)
@@ -115,23 +115,23 @@ class fuzzy:
         # set up left distance
         x = np.arange(0, MAX_DISTANCE+1, 10)
         self.leftDistance = ctrl.Antecedent(x, "LeftDistance")
-        self.leftDistance['near'] = fuzz.trapmf(self.leftDistance.universe, [0, 0, 90, 100])
-        self.leftDistance['med']  = fuzz.trapmf(self.leftDistance.universe, [90, 100, 190,200])
-        self.leftDistance['far']  = fuzz.trapmf(self.leftDistance.universe, [190, 200, MAX_DISTANCE, MAX_DISTANCE])
+        self.leftDistance['near'] = fuzz.trapmf(self.leftDistance.universe, [0, 0, 65, 75])
+        self.leftDistance['med']  = fuzz.trapmf(self.leftDistance.universe, [65, 75, 140, 150])
+        self.leftDistance['far']  = fuzz.trapmf(self.leftDistance.universe, [140, 150, MAX_DISTANCE, MAX_DISTANCE])
 
         # set up center distance
         x = np.arange(0, MAX_DISTANCE+1, 10)
         self.centerDistance = ctrl.Antecedent(x, "CenterDistance")
-        self.centerDistance['near'] = fuzz.trapmf(self.centerDistance.universe, [0, 0, 90, 100])
-        self.centerDistance['med']  = fuzz.trapmf(self.centerDistance.universe, [90, 100, 190, 200])
-        self.centerDistance['far']  = fuzz.trapmf(self.centerDistance.universe, [190, 200, MAX_DISTANCE, MAX_DISTANCE])
+        self.centerDistance['near'] = fuzz.trapmf(self.centerDistance.universe, [0, 0, 65, 75])
+        self.centerDistance['med']  = fuzz.trapmf(self.centerDistance.universe, [65, 75, 140, 150])
+        self.centerDistance['far']  = fuzz.trapmf(self.centerDistance.universe, [140, 150, MAX_DISTANCE, MAX_DISTANCE])
 
         # set up right distance
         x = np.arange(0, MAX_DISTANCE+1, 10)
         self.rightDistance = ctrl.Antecedent(x, "RightDistance")
-        self.rightDistance['near'] = fuzz.trapmf(self.rightDistance.universe, [0, 0, 90, 100])
-        self.rightDistance['med']  = fuzz.trapmf(self.rightDistance.universe, [90, 100, 190, 200])
-        self.rightDistance['far']  = fuzz.trapmf(self.rightDistance.universe, [190, 200, MAX_DISTANCE, MAX_DISTANCE])
+        self.rightDistance['near'] = fuzz.trapmf(self.rightDistance.universe, [0, 0, 65, 75])
+        self.rightDistance['med']  = fuzz.trapmf(self.rightDistance.universe, [65, 75, 140, 150])
+        self.rightDistance['far']  = fuzz.trapmf(self.rightDistance.universe, [140, 150, MAX_DISTANCE, MAX_DISTANCE])
 
         # set up output angle as a consequent
         x = np.arange(-1, 1, 0.1)

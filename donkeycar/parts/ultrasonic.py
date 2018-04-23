@@ -9,8 +9,9 @@ import sys
 
 ULTRASONIC_DEFAULT_DISTANCE = 800.00
 ULTRASONIC_RETRY = 3
-ULTRASONIC_MEAN_LENGTH = 9
-ULTRASONIC_TIMEOUT = 0.05
+ULTRASONIC_MEAN_LENGTH = 5
+#ULTRASONIC_TIMEOUT = 0.05
+ULTRASONIC_TIMEOUT = 0.1
 
 MOCKULTRASONIC_DEFAULT_DISTANCE = 800.0
 CACHEULTRASONICCLIENT_DEFAULT_DISTANCE = 800.0
@@ -18,8 +19,8 @@ CACHEULTRASONICCLIENT_DEFAULT_DISTANCE = 800.0
 ################################################################################
 
 class Ultrasonic():
-
     def __init__(self, gpio_trigger=23, gpio_echo=27, poll_delay=1, name=''):
+
         self.gpio_trigger = gpio_trigger
         self.gpio_echo = gpio_echo
         self.poll_delay = poll_delay
@@ -29,7 +30,7 @@ class Ultrasonic():
         #self.gpio_echo = int(sys.argv[2])
         #self.poll_delay = int(sys.argv[3])
         #self.name = sys.argv[4]
-		
+
         #GPIO Mode (BOARD / BCM)
         GPIO.setmode(GPIO.BCM)
 
@@ -39,8 +40,8 @@ class Ultrasonic():
 
         self.distance = 0.0
         self.distance_array = []
-        for i in range(0, ULTRASONIC_MEAN_LENGTH):
-           self.distance_array = self.distance_array + [0] 
+        #for i in range(1, ULTRASONIC_MEAN_LENGTH):
+        #   self.distance_array = self.distance_array + [0] 
 
         self.on = True
 
@@ -74,9 +75,10 @@ class Ultrasonic():
             
     def run_threaded(self):
         return self.distance
-		
+
     def run(self):
-        self.distance = self.poll_distance()
+        #self.distance = self.poll_distance()
+        self.distance = self.poll_distance_with_smoothing()
         return self.distance
 
     def shutdown(self):
@@ -86,46 +88,86 @@ class Ultrasonic():
         GPIO.cleanup()
 
     def poll_distance(self):
+        #print("a")
 
-        if GPIO.input(self.gpio_echo) == 1:
-            return ULTRASONIC_DEFAULT_DISTANCE-1
+        #if GPIO.input(self.gpio_echo) == 1:
+        #    return ULTRASONIC_DEFAULT_DISTANCE-1
 
+        n=0
+        while GPIO.input(self.gpio_echo) == 1:
+            time.sleep(0.001)  # sleep for 1ms to wait for echo pin to become low
+            #time.sleep(0.00001)
+            #n=n+1
+            #if n > 100000:
+            #    return (ULTRASONIC_DEFAULT_DISTANCE)
+
+        #print("b")
         distance = 0
 
         # set Trigger to HIGH
         GPIO.output(self.gpio_trigger, True)
-		
+
         # set Trigger after 0.01ms to LOW
         time.sleep(0.00001)
         GPIO.output(self.gpio_trigger, False)
-		
-        #StartTime = time.time()
-        #StopTime = time.time()
-        StartTime = StopTime = time.time()
-		
+
+        #StartTime = StopTime = time.time()
+
         # save StartTime
-        while GPIO.input(self.gpio_echo) == 0:
-            StartTime = time.time()
-            if StartTime - StopTime > ULTRASONIC_TIMEOUT:
-               distance = ULTRASONIC_DEFAULT_DISTANCE
-               break
+        #while GPIO.input(self.gpio_echo) == 0:
+        #    StartTime = time.time()
+        #    if StartTime - StopTime > ULTRASONIC_TIMEOUT:
+        #       distance = ULTRASONIC_DEFAULT_DISTANCE
+        #       break
 
-        if distance == ULTRASONIC_DEFAULT_DISTANCE:
-            return (ULTRASONIC_DEFAULT_DISTANCE-2)
+        #if distance == ULTRASONIC_DEFAULT_DISTANCE:
+        #    print("ULTRASONIC_TIMEOUT")
+        #    return (ULTRASONIC_DEFAULT_DISTANCE-2)
 
+        just_arrived=0
         # save time of arrival
-        StopTime = StartTime
-        while GPIO.input(self.gpio_echo) == 1:
-            StopTime = time.time()
-            if StopTime - StartTime > ULTRASONIC_TIMEOUT:
-               distance = ULTRASONIC_DEFAULT_DISTANCE
-               break
+        #StopTime = StartTime
 
-        if distance == ULTRASONIC_DEFAULT_DISTANCE:
-            return (ULTRASONIC_DEFAULT_DISTANCE-3)
+        #print("c %i" % GPIO.input(self.gpio_echo))
+
+        n=0
+        # wait for echo pin to become high
+        while GPIO.input(self.gpio_echo) == 0:
+            #time.sleep(0.001)  # sleep for 1ms
+            n=n+1
+            if n > 3000:
+                #print("d %i %i" % (GPIO.input(self.gpio_echo), n))
+                return (ULTRASONIC_DEFAULT_DISTANCE+1)
+        #print("d %i %i" % (GPIO.input(self.gpio_echo), n))
+
+        # test echo pin again in case the previous high is a fake one
+        n=0
+        while GPIO.input(self.gpio_echo) == 0:
+            n=n+1
+            if n > 3000:
+                #print("e %i %i" % (GPIO.input(self.gpio_echo), n))
+                return (ULTRASONIC_DEFAULT_DISTANCE+2)
+        #print("e %i %i" % (GPIO.input(self.gpio_echo), n))
+
+        StartTime = StopTime = time.time()
+
+        n=0
+        while GPIO.input(self.gpio_echo) == 1:
+            n=n+1
+
+            StopTime = time.time()  # update stop time
+            #if StopTime - StartTime > ULTRASONIC_TIMEOUT:
+            #   print("echo time longer than %f seconds" % ULTRASONIC_TIMEOUT)
+            #   distance = ULTRASONIC_DEFAULT_DISTANCE
+            #   break
+        #print("f %i %i" % (GPIO.input(self.gpio_echo), n))
+
+        #if distance == ULTRASONIC_DEFAULT_DISTANCE:
+        #    return (ULTRASONIC_DEFAULT_DISTANCE-3)
 
         # Convert the timer values into centimetres
         distance = (StopTime - StartTime) * 34300 / 2
+        #print("distance = %.4f" % distance)
 
         return distance
 
@@ -143,15 +185,25 @@ class Ultrasonic():
             
     def poll_distance_with_smoothing(self):
         distance = self.poll_distance()
+        if distance < ULTRASONIC_DEFAULT_DISTANCE:
+            array_len = len(self.distance_array)
 
-        self.distance_array = self.distance_array[1:] + [distance]
+            # append current value to array, up to ULTRASONIC_MEAN_LENGTH items
+            if array_len < ULTRASONIC_MEAN_LENGTH:
+                self.distance_array = self.distance_array + [distance]
 
-        return np.mean(self.distance_array)
+            # pop out first value, push in current value
+            else:
+                self.distance_array = self.distance_array[1:] + [distance]
+
+        mean_distance = np.mean(self.distance_array)
+        print("%.4f %.4f" % (distance, mean_distance))
+
+        return mean_distance
 
 ################################################################################
 
 class MockUltrasonic():
-
     def __init__(self, gpio_trigger = 12, gpio_echo = 16, poll_delay=1, name=''):
         self.gpio_trigger = gpio_trigger
         self.gpio_echo = gpio_echo
@@ -167,7 +219,7 @@ class MockUltrasonic():
             
     def run_threaded(self):
         return self.distance
-		
+
     def run(self):
         self.distance = self.poll_distance()
         return self.distance
@@ -176,18 +228,17 @@ class MockUltrasonic():
         print('Shutdown mock ultrasonic', self.name)
         self.on = False
         time.sleep(1)
-		
+
     def poll_distance(self):
         return MOCKULTRASONIC_DEFAULT_DISTANCE
 
 ################################################################################
 
 class CacheUltrasonicServer(Ultrasonic):
-
     def __init__(self, gpio_trigger=23, gpio_echo=27, poll_delay=1, name=''):
 
         super().__init__(gpio_trigger, gpio_echo, poll_delay, name)
-		
+
         from pymemcache.client import base
         self.client = base.Client(('localhost', 11211))
 
@@ -210,7 +261,6 @@ class CacheUltrasonicServer(Ultrasonic):
 
 # to be called in the donkeycar loop
 class CacheUltrasonicClient():
-
     def __init__(self, gpio_trigger = 12, gpio_echo = 16, poll_delay=1, name=''):
         from pymemcache.client import base
         self.client = base.Client(('localhost', 11211))
@@ -229,7 +279,7 @@ class CacheUltrasonicClient():
             
     def run_threaded(self):
         return self.distance
-		
+
     def run(self):
         self.distance = self.poll_distance()
         return self.distance
@@ -239,7 +289,7 @@ class CacheUltrasonicClient():
         self.on = False
         time.sleep(1)
         self.client.close()
-		
+
     def poll_distance(self):
         distance = self.client.get('ultrasonic_' + self.name)
 
@@ -247,7 +297,7 @@ class CacheUltrasonicClient():
             distance = CACHEULTRASONICCLIENT_DEFAULT_DISTANCE
         else:
             distance = float(distance)
-			
+
         return distance
 
 if __name__ == "__main__":
@@ -278,4 +328,5 @@ if __name__ == "__main__":
         while True:
             data = u.run()
             print('ultrasonic: ', data)
-            time.sleep(1.0)
+            time.sleep(0.05)
+            #time.sleep(ULTRASONIC_TIMEOUT)
